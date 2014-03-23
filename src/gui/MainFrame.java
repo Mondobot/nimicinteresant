@@ -10,7 +10,11 @@
  */
 package gui;
 
+import java.util.List;
 import javax.swing.DefaultListModel;
+import observer.IUserListener;
+import model.Model;
+import model.User;
 
 /**
  *
@@ -18,16 +22,30 @@ import javax.swing.DefaultListModel;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    DefaultListModel<Object> files;
-    DefaultListModel<Object> users;
+    DefaultListModel<Object> filesModel;
+    DefaultListModel<Object> usersModel;
     
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
         setLocationRelativeTo(null);
-        files = new DefaultListModel<Object>();
-        files.add(0, "Matei sugatorul");
-        jList1.setModel(files);
+        filesModel = new DefaultListModel<Object>();
+        filesModel.add(0, "Matei sugatorul");
+        jList1.setModel(filesModel);
+        
+        Model.getInstance().addUserListener(new IUserListener() {
+			
+			@Override
+			public void usersUpdated(List<User> users) {
+				updateUsersList(users);				
+			}
+		});
+    }
+    
+    private void updateUsersList(List<User> users){
+    	usersModel.clear();
+    	for (User user: users)
+    		usersModel.addElement(user);    	
     }
 
     /** This method is called from within the constructor to
