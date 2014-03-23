@@ -1,38 +1,68 @@
 package model;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import observer.IUserListener;
-import observer.IUserSubject;
+import observer.*;
 
-public class Model implements IUserSubject {
+public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 	private static Model model;
-	public List<User> users;
+	private User myUser;
+	private List<User> users;
+	private List<File> files;
+	private List<Transfer> transfers;
 	
 	private Model(){
-		
+		users = new ArrayList<>();
+		files = new ArrayList<>();
+		transfers = new ArrayList<>();
+		myUser = new User();
 	}
 	
 	public static Model getInstance(){
-		if (model != null)
+		if (model == null)
 			model = new Model();
 		return model;
 	}
+	
+	public User getMyUser() {
+		return myUser;
+	}
 
-	public void setUsers() {
-		
+	public void setMyUser(User myUser) {
+		this.myUser = myUser;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
 		notifyListenersUsersUpdated();
 	}
 	
-	@Override
-	public void addUserListener(IUserListener userListener) {
-		userListeners.add(userListener);
-		
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setFiles(List<File> files) {
+		this.files = files;
+		notifyListenersFilesUpdated();
+	}
+	
+	public List<File> getFiles() {
+		return files;
+	}
+	
+	public void setTransfers(List<Transfer> transfers) {
+		this.transfers = transfers;
+		notifyListenersTransfersUpdated();
+	}
+
+	public List<Transfer> getTransfers() {
+		return transfers;
 	}
 
 	@Override
-	public void removeUserListener(IUserListener userListener) {
-		userListeners.remove(userListener);		
+	public void addUserListener(IUserListener userListener) {
+		userListeners.add(userListener);
 	}
 
 	@Override
@@ -40,4 +70,28 @@ public class Model implements IUserSubject {
 		for (IUserListener userListener : userListeners)
 			userListener.usersUpdated(users);
 	}
+
+	@Override
+	public void addFileListener(IFileListener fileListener) {
+		fileListeners.add(fileListener);
+	}
+
+	@Override
+	public void notifyListenersFilesUpdated() {
+		for (IFileListener fileListener : fileListeners)
+			fileListener.filesUpdated(files);		
+	}
+
+	@Override
+	public void addTransferListener(ITransferListener transferListener) {
+		transferListeners.add(transferListener);		
+	}
+
+	@Override
+	public void notifyListenersTransfersUpdated() {
+		for (ITransferListener transferListener : transferListeners)
+			transferListener.transfersUpdated(transfers);
+	}
+
+	
 }

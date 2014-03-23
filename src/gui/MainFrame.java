@@ -12,18 +12,20 @@ package gui;
 
 import java.util.List;
 import javax.swing.DefaultListModel;
+
+import observer.IFileListener;
+import observer.ITransferListener;
 import observer.IUserListener;
+import model.File;
 import model.Model;
+import model.Transfer;
 import model.User;
 
-/**
- *
- * @author dorobantu
- */
 public class MainFrame extends javax.swing.JFrame {
 
-    DefaultListModel<Object> filesModel;
     DefaultListModel<Object> usersModel;
+    DefaultListModel<Object> filesModel;
+    DefaultListModel<Object> transfersModel;
     
     /** Creates new form MainFrame */
     public MainFrame() {
@@ -40,14 +42,43 @@ public class MainFrame extends javax.swing.JFrame {
 				updateUsersList(users);				
 			}
 		});
+        
+        Model.getInstance().addFileListener(new IFileListener() {
+			
+			@Override
+			public void filesUpdated(List<File> files) {
+				updateFilesList(files);				
+			}
+		});
+        
+        Model.getInstance().addTransferListener(new ITransferListener() {
+			
+			@Override
+			public void transfersUpdated(List<Transfer> transfers) {
+				updateTransfersList(transfers);				
+			}
+		});
     }
     
-    private void updateUsersList(List<User> users){
+    private void updateUsersList(List<User> users) {
     	usersModel.clear();
     	for (User user: users)
     		usersModel.addElement(user);    	
     }
 
+    private void updateFilesList(List<File> files) {
+    	filesModel.clear();
+    	for (File file : files)
+    		filesModel.addElement(file);
+    }
+    
+    private void updateTransfersList(List<Transfer> transfers) {
+    	transfersModel.clear();
+    	for (Transfer transfer : transfers)
+    		transfersModel.addElement(transfer);
+    }
+    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is

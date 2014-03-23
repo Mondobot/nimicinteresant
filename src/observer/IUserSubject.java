@@ -8,6 +8,5 @@ public interface IUserSubject {
 	List<IUserListener> userListeners = new ArrayList<>();
 	
 	public void addUserListener(IUserListener userListener);
-	public void removeUserListener(IUserListener userListener);
 	public void notifyListenersUsersUpdated();
 }

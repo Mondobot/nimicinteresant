@@ -3,17 +3,16 @@ MVC:
 		- Users(Name + UserID) -cache
 		- Files(Name + FileID + UserID) -cache
 		- Transfers(File + UserS + UserD + TransfID + Progress) -cache
-		- my_User
+		- myUser
 
 		- SetUsers(lista Users)
 		- SetTransfers(lista Transfers)
 		- SetFiles(lista Files)
 		- GetUid(name)
-		- GetOwnUid()
 	
 		// Doar pt View
-		- GetFiles(UserID / name)
-		- GetTransfers(UserID / name)
+		- GetFiles()
+		- GetTransfers()
 		- GetUsers()
 
 	- Controller:
