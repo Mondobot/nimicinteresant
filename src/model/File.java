@@ -17,27 +17,27 @@ public class File {
 		this.owner = owner;
 	}
 	
-	String getName() {
+	public String getName() {
 		return this.name;
 	}
 	
-	void setName(String newName) {
+	public void setName(String newName) {
 		this.name = newName;
 	}
 	
-	Integer getID() {
+	public Integer getID() {
 		return this.ID;
 	}
 	
-	void setID(Integer newID) {
+	public void setID(Integer newID) {
 		this.ID = newID;
 	}
 	
-	User getOwner() {
+	public User getOwner() {
 		return this.owner;
 	}
 	
-	void setOwner(User newOwner) {
+	public void setOwner(User newOwner) {
 		this.owner = newOwner;
 	}
 }
