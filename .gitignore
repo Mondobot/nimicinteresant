@@ -1,1 +1,4 @@
 bin/src/*
+.arch.swp
+src/model/*
+bin/model/*

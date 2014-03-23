@@ -1,6 +1,5 @@
 MVC:
 	- Model:
-		- date
 		- Users(Name + UserID) -cache
 		- Files(Name + FileID + UserID) -cache
 		- Transfers(File + UserS + UserD + TransfID + Progress) -cache
