@@ -34,6 +34,7 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 
 	public void setUsers(List<User> users) {
 		this.users = users;
+		System.out.println(this.users.size() + " model");
 		notifyListenersUsersUpdated();
 	}
 	

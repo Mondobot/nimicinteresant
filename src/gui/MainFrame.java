@@ -27,6 +27,7 @@ import observer.IFileListener;
 import observer.ITransferListener;
 import observer.IUserListener;
 import mediator.Mediator;
+import mediator.MediatorMock;
 import model.File;
 import model.Model;
 import model.Transfer;
@@ -68,7 +69,7 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
         designView();
         
-        controller = new Controller(new Mediator());
+        controller = new Controller(new MediatorMock());
         controller.registerMyUser("test");
         
         addListeners();    
@@ -85,15 +86,18 @@ public class MainFrame extends javax.swing.JFrame {
     	setLocationRelativeTo(null);
     	setResizable(false);
     	setTitle("Tema 1");
-        Toolkit tk = Toolkit.getDefaultToolkit();  
+    	jList1.setModel(filesModel);
+    	jList2.setModel(usersModel);
+    	jTable1.setModel(transfersModel);
+    	Toolkit tk = Toolkit.getDefaultToolkit();  
         int xSize = ((int) tk.getScreenSize().getWidth());  
         int ySize = ((int) tk.getScreenSize().getHeight());  
         setSize(xSize * 2 / 3, ySize * 2 / 3);  
         setLocationRelativeTo(null);
         
-        jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
+/*        jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
         jTable1.setFillsViewportHeight(true);
-        jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());
+        jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());*/
     }
     
     private void addListeners(){
@@ -124,8 +128,9 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void updateUsersList(List<User> users) {
     	usersModel.clear();
+    	System.out.println(users.size() + " gui");
     	for (User user: users)
-    		usersModel.addElement(user);    	
+    		usersModel.addElement(user);  
     }
 
     private void updateFilesList(List<File> files) {

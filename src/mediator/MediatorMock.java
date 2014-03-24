@@ -7,15 +7,17 @@ import model.Transfer;
 import model.User;
 
 public class MediatorMock implements IMediator {
-	ArrayList<User> users;
-	ArrayList<File> u1, u2, u3;
-	ArrayList<Transfer> tr;
+	ArrayList<User> users = new ArrayList<>();
+	ArrayList<File> u1 = new ArrayList<>();
+	ArrayList<File> u2 = new ArrayList<>();
+	ArrayList<File> u3 = new ArrayList<>();
+	ArrayList<Transfer> tr = new ArrayList<>();
 	
 	
 	public MediatorMock() {
-		users.add(new User("Churchill", 0));
-		users.add(new User("Hitler", 3));
-		users.add(new User("Stalin", 1));
+		users.add(new User(0, "Churchill"));
+		users.add(new User(3, "Hitler"));
+		users.add(new User(1, "Stalin"));
 		
 		u1.add(new File("Secret British stuff", 0, users.get(0)));
 		u2.add(new File("We all can Hitler..", 1, users.get(1)));
@@ -25,6 +27,13 @@ public class MediatorMock implements IMediator {
 		tr.add(new Transfer(0, u1.get(0), users.get(0), users.get(2)));
 		tr.add(new Transfer(1, u3.get(0), users.get(2), users.get(1)));
 		
+	}
+	
+	@Override
+	public User registerUser(String username) {
+		User user = new User(0, username);
+		
+		return user;
 	}
 	
 	@Override

@@ -12,9 +12,7 @@ public class Mediator implements IMediator{
 	//todo implement for the version 2.0
 	public User registerUser(String username) {
 		//register user to the web service in the version 2.0
-		User user = new User(0, username);
-		
-		return user;
+		return null;
 	}
 
 	//todo implement for the version 2.0
