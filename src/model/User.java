@@ -29,4 +29,8 @@ public class User{
 	public void setID(Integer newID) {
 		this.ID = newID;
 	}
+	
+	public String toString() {
+		return this.getName();
+	}
 }
