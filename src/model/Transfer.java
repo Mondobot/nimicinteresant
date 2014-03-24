@@ -6,6 +6,7 @@ public class Transfer {
 	User source;
 	User dest;
 	Integer progress;
+	String status;
 	
 	public Transfer(Integer ID, File cargo, User source, User dest) {
 		this.ID = ID;
@@ -13,6 +14,7 @@ public class Transfer {
 		this.source = source;
 		this.dest = dest;
 		this.progress = 0;
+		this.status = "None";
 	}
 	
 	public Integer getID() {
@@ -54,4 +56,13 @@ public class Transfer {
 	public void setProgress(Integer progress) {
 		this.progress = progress;
 	}
+	
+	public String getStatus() {
+		return this.status;
+	}
+	
+	public void setStatus(String newStatus) {
+		this.status = newStatus;
+	}
+		
 }
