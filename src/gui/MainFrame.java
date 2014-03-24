@@ -21,9 +21,12 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import controller.Controller;
+
 import observer.IFileListener;
 import observer.ITransferListener;
 import observer.IUserListener;
+import mediator.Mediator;
 import model.File;
 import model.Model;
 import model.Transfer;
@@ -55,16 +58,27 @@ class ProgressRenderer extends DefaultTableCellRenderer {
 }
 
 public class MainFrame extends javax.swing.JFrame {
-
-    DefaultListModel<Object> usersModel;
-    DefaultListModel<Object> filesModel;
-    DefaultListModel<Object> transfersModel;
+	private Controller controller;
+	
+    DefaultListModel<Object> usersModel = new DefaultListModel<>();
+    DefaultListModel<Object> filesModel = new DefaultListModel<>();
+    DefaultTableModel transfersModel = new DefaultTableModel();
     
     /** Creates new form MainFrame */
     public MainFrame() {
         initComponents();
         designView();
-        addListeners();        
+        
+        controller = new Controller(new Mediator());
+        
+        addListeners();    
+        getListsFromServer();
+    }
+    
+    private void getListsFromServer() {
+    	controller.updateUsers();
+    	controller.updateFiles();
+    	controller.updateTransfers();
     }
     
     private void designView(){
@@ -80,8 +94,8 @@ public class MainFrame extends javax.swing.JFrame {
         jTable1.setFillsViewportHeight(true);
         jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());
         
-        DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
-        model.addRow(new Object[]{"Column 1", "Column 2", "Column 3", 20, "Column 5"});  
+        transfersModel = (DefaultTableModel) jTable1.getModel();
+        transfersModel.addRow(new Object[]{"Column 1", "Column 2", "Column 3", 20, "Column 5"});  
 
         filesModel = new DefaultListModel<Object>();
         filesModel.add(0, "Matei sugatorul");
@@ -127,9 +141,24 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void updateTransfersList(List<Transfer> transfers) {
-    	transfersModel.clear();
-    	for (Transfer transfer : transfers)
-    		transfersModel.addElement(transfer);
+    	transfersModel.setRowCount(0);
+    	for (Transfer transfer : transfers) {
+    		Object []row = new Object[5];
+    		row[0] = transfer.getSource();
+    		row[1] = transfer.getDest();
+    		row[2] = transfer.getCargo();
+    		row[3] = transfer.getProgress();
+    		if (transfer.getProgress() < 100) {
+    			if (transfer.getSource() == Model.getInstance().getMyUser())
+    				row[4] = "Sending...";
+    			else if (transfer.getDest() == Model.getInstance().getMyUser())
+    				row[4] = "Receiving...";
+    		}
+    		else if (transfer.getProgress() == 100) 
+    			row[4] = "Completed";    		
+    		
+    		transfersModel.addRow(row);
+    	}
     }
     
     

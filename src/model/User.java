@@ -2,16 +2,16 @@ package model;
 
 public class User{
 	String name;
-	Integer ID;
+	int id;
 	
 	public User() {
 		this.name = "None";
-		this.ID = -1;
+		this.id = -1;
 	}
 	
-	public User(String name, Integer ID) {
+	public User(String name, int id) {
 		this.name = name;
-		this.ID = ID;
+		this.id = id;
 	}
 	
 	public String getName() {
@@ -22,11 +22,11 @@ public class User{
 		this.name = newName;
 	}
 	
-	public Integer getID() {
-		return this.ID;
+	public int getId() {
+		return this.id;
 	}
 	
-	public void setID(Integer newID) {
-		this.ID = newID;
+	public void setID(int newId) {
+		this.id = newId;
 	}
 }

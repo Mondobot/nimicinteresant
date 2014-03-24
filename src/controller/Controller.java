@@ -4,36 +4,31 @@ import java.util.ArrayList;
 
 import javax.print.attribute.standard.Media;
 
+import mediator.IMediator;
 import mediator.Mediator;
 import model.*;
 
 public class Controller {
-	private static Controller con;
+	private IMediator mediator;
 	
-	private Controller() {
-	}
-	
-	public static Controller getInstance() {
-		if (con == null)
-			con = new Controller();
-		
-		return con;
+	public Controller(IMediator mediator) {
+		this.mediator = mediator;
 	}
 	
 	public void updateUsers() {
-		ArrayList<User> newUsers = Mediator.getInstance().getUsers();
+		ArrayList<User> newUsers = mediator.getUsers();
 		Model.getInstance().setUsers(newUsers);
 	}
 	
 	public void updateFiles() {
-		Integer myID = Model.getInstance().getMyUser().getID();
-		ArrayList<File> newFiles = Mediator.getInstance().getFiles(myID);
+		Integer myID = Model.getInstance().getMyUser().getId();
+		ArrayList<File> newFiles = mediator.getFiles(myID);
 		Model.getInstance().setFiles(newFiles);
 	}
 	
 	public void updateTransfers() {
-		Integer myID = Model.getInstance().getMyUser().getID();
-		ArrayList<Transfer> newTrans = Mediator.getInstance().getTransfers(myID);
+		Integer myID = Model.getInstance().getMyUser().getId();
+		ArrayList<Transfer> newTrans = mediator.getTransfers(myID);
 		Model.getInstance().setTransfers(newTrans);
 	}
 }

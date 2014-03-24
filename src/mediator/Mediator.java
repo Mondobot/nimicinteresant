@@ -4,19 +4,11 @@ import java.util.ArrayList;
 
 import model.*;
 
-public class Mediator {
-	private static Mediator med;
+public class Mediator implements IMediator{
 
-	private Mediator() {
+	public Mediator() {
 	}
-	
-	public static Mediator getInstance() {
-		if (med == null)
-			med = new Mediator();
-	
-		return med;
-	}
-	
+
 	public ArrayList<User> getUsers() {
 		System.out.println("Getting users");
 		return new ArrayList<User>();
