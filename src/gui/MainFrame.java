@@ -89,18 +89,23 @@ public class MainFrame extends javax.swing.JFrame {
     	setLocationRelativeTo(null);
     	setResizable(false);
     	setTitle("Tema 1");
-    	jList1.setModel(filesModel);
-    	jList2.setModel(usersModel);
-    	jTable1.setModel(transfersModel);
     	Toolkit tk = Toolkit.getDefaultToolkit();  
         int xSize = ((int) tk.getScreenSize().getWidth());  
         int ySize = ((int) tk.getScreenSize().getHeight());  
         setSize(xSize * 2 / 3, ySize * 2 / 3);  
         setLocationRelativeTo(null);
         
-/*        jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
+    	jList1.setModel(filesModel);
+    	jList2.setModel(usersModel);
+    	jTable1.setModel(transfersModel);
+    	transfersModel.setColumnCount(5);
+    	transfersModel.setColumnIdentifiers(new String [] {
+                "Source", "Destination", "File name", "Progress", "Status"
+            });
+        
+        jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
         jTable1.setFillsViewportHeight(true);
-        jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());*/
+        jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());
     }
     
     private void addListeners(){
