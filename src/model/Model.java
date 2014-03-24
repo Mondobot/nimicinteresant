@@ -16,7 +16,6 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 		users = new ArrayList<>();
 		files = new ArrayList<>();
 		transfers = new ArrayList<>();
-		myUser = new User();
 	}
 	
 	public static Model getInstance(){

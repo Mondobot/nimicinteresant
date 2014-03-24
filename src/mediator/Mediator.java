@@ -8,19 +8,27 @@ public class Mediator implements IMediator{
 
 	public Mediator() {
 	}
+	
+	//todo implement for the version 2.0
+	public User registerUser(String username) {
+		//register user to the web service in the version 2.0
+		User user = new User(0, username);
+		
+		return user;
+	}
 
+	//todo implement for the version 2.0
 	public ArrayList<User> getUsers() {
-		System.out.println("Getting users");
 		return new ArrayList<User>();
 	}
 	
+	//todo implement for the version 2.0
 	public ArrayList<File> getFiles(Integer userID) {
-		System.out.println("Getting files for " + userID);
 		return new ArrayList<File>();
 	}
 	
+	//todo implement for the version 2.0
 	public ArrayList<Transfer> getTransfers(Integer userID) {
-		System.out.println("Getting transfers for " + userID);
 		return new ArrayList<Transfer>();
 	}
 }

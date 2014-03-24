@@ -5,12 +5,6 @@ public class File {
 	Integer ID;
 	User owner;
 	
-	public File() {
-		this.name = "None";
-		this.ID = -1;
-		this.owner = new User();
-	}
-	
 	public File(String name, Integer ID, User owner) {
 		this.name = name;
 		this.ID = -1;

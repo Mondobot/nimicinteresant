@@ -7,14 +7,6 @@ public class Transfer {
 	User dest;
 	Integer progress;
 	
-	public Transfer() {
-		this.ID = -1;
-		this.cargo = new File();
-		this.source = new User();
-		this.dest = new User();
-		this.progress = 0;
-	}
-	
 	public Transfer(Integer ID, File cargo, User source, User dest) {
 		this.ID = ID;
 		this.cargo = cargo;

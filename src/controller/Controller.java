@@ -2,6 +2,7 @@ package controller;
 
 import java.util.ArrayList;
 
+import javax.jws.WebParam.Mode;
 import javax.print.attribute.standard.Media;
 
 import mediator.IMediator;
@@ -13,6 +14,11 @@ public class Controller {
 	
 	public Controller(IMediator mediator) {
 		this.mediator = mediator;
+	}
+	
+	public void registerMyUser(String name){
+		User myUser = mediator.registerUser(name);
+		Model.getInstance().setMyUser(myUser);
 	}
 	
 	public void updateUsers() {

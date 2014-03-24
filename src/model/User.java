@@ -1,15 +1,10 @@
 package model;
 
 public class User{
-	String name;
 	int id;
+	String name;
 	
-	public User() {
-		this.name = "None";
-		this.id = -1;
-	}
-	
-	public User(String name, int id) {
+	public User(int id, String name) {
 		this.name = name;
 		this.id = id;
 	}
