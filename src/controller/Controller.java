@@ -26,9 +26,8 @@ public class Controller {
 		Model.getInstance().setUsers(newUsers);
 	}
 	
-	public void updateFiles() {
-		Integer myID = Model.getInstance().getMyUser().getId();
-		ArrayList<File> newFiles = mediator.getFiles(myID);
+	public void updateFiles(String name) {
+		ArrayList<File> newFiles = mediator.getFiles(Model.getInstance().getID(name));
 		Model.getInstance().setFiles(newFiles);
 	}
 	

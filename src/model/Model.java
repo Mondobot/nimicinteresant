@@ -92,6 +92,15 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 		for (ITransferListener transferListener : transferListeners)
 			transferListener.transfersUpdated(transfers);
 	}
+	
+	public int getID(String name) {
+		for (User i:users) {
+			if (i.getName().equals(name))
+				return i.getId();
+		}
+		
+		return -1;
+	}
 
 	
 }

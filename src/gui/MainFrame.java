@@ -12,10 +12,13 @@ package gui;
 
 import java.awt.Component;
 import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JProgressBar;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -78,7 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void getListsFromServer() {
     	controller.updateUsers();
-    	controller.updateFiles();
+    	controller.updateFiles(usersModel.get(0).toString());
     	controller.updateTransfers();
     }
     
@@ -123,6 +126,15 @@ public class MainFrame extends javax.swing.JFrame {
 			public void transfersUpdated(List<Transfer> transfers) {
 				updateTransfersList(transfers);				
 			}
+		});
+        
+        jList2.addMouseListener(new MouseAdapter() {
+        	public void mouseClicked(MouseEvent evt) {
+        		if (evt.getClickCount() == 2) {
+        			JList x = (JList)evt.getSource();
+        			controller.updateFiles(usersModel.get(x.locationToIndex(evt.getPoint())).toString());
+        		}
+        	}
 		});
     }
     
