@@ -40,4 +40,8 @@ public class File {
 	public void setOwner(User newOwner) {
 		this.owner = newOwner;
 	}
+	
+	public String toString() {
+		return this.getName();
+	}
 }
