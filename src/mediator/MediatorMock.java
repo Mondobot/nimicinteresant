@@ -57,7 +57,8 @@ public class MediatorMock implements IMediator {
 		if (userID == 1)
 			controller.updateFiles(this.u2);
 		
-		controller.updateFiles(this.u3);
+		if (userID == 3)
+			controller.updateFiles(this.u3);
 	}
 
 	@Override
