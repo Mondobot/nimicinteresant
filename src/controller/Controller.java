@@ -1,39 +1,35 @@
 package controller;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import javax.jws.WebParam.Mode;
-import javax.print.attribute.standard.Media;
+import worker.TransferTask;
 
 import mediator.IMediator;
-import mediator.Mediator;
 import model.*;
 
 public class Controller {
-	private IMediator mediator;
 	
-	public Controller(IMediator mediator) {
-		this.mediator = mediator;
+	public Controller() {
 	}
 	
-	public void registerMyUser(String name){
-		User myUser = mediator.registerUser(name);
+	public void registerMyUser(User myUser){
 		Model.getInstance().setMyUser(myUser);
 	}
 	
-	public void updateUsers() {
-		ArrayList<User> newUsers = mediator.getUsers();
+	public void updateUsers(List<User> newUsers) {
 		Model.getInstance().setUsers(newUsers);
 	}
 	
-	public void updateFiles(String name) {
-		ArrayList<File> newFiles = mediator.getFiles(Model.getInstance().getID(name));
+	public void updateFiles(List<File> newFiles) {
 		Model.getInstance().setFiles(newFiles);
 	}
 	
-	public void updateTransfers() {
-		Integer myID = Model.getInstance().getMyUser().getId();
-		ArrayList<Transfer> newTrans = mediator.getTransfers(myID);
-		Model.getInstance().setTransfers(newTrans);
+	public void updateTransfers(List<Transfer> newTransfers) {
+		for (Transfer transfer : newTransfers){
+			TransferTask transferTask = new TransferTask(transfer.getProgress());
+			transferTask.execute();
+		}
+		Model.getInstance().setTransfers(newTransfers);
 	}
 }

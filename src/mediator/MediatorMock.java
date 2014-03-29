@@ -1,20 +1,25 @@
 package mediator;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import controller.Controller;
 
 import model.File;
+import model.Model;
 import model.Transfer;
 import model.User;
 
 public class MediatorMock implements IMediator {
-	ArrayList<User> users = new ArrayList<>();
-	ArrayList<File> u1 = new ArrayList<>();
-	ArrayList<File> u2 = new ArrayList<>();
-	ArrayList<File> u3 = new ArrayList<>();
-	ArrayList<Transfer> tr = new ArrayList<>();
+	List<User> users = new ArrayList<>();
+	List<File> u1 = new ArrayList<>();
+	List<File> u2 = new ArrayList<>();
+	List<File> u3 = new ArrayList<>();
+	List<Transfer> tr = new ArrayList<>();
 	
+	Controller controller;
 	
-	public MediatorMock() {
+	public MediatorMock(Controller controller) {
 		users.add(new User(0, "Churchill"));
 		users.add(new User(3, "Hitler"));
 		users.add(new User(1, "Stalin"));
@@ -24,39 +29,41 @@ public class MediatorMock implements IMediator {
 		u3.add(new File("You can't read this, I have Enigma", 2, users.get(2)));
 		u3.add(new File("I did Nazi that coming", 3, users.get(2)));
 		
-		tr.add(new Transfer(0, u1.get(0), users.get(0), users.get(2)));
-		tr.add(new Transfer(1, u3.get(0), users.get(2), users.get(1)));
+		tr.add(new Transfer(0, users.get(0), users.get(2), u1.get(0), 80, "Completed"));
+		tr.add(new Transfer(1, users.get(2), users.get(1), u3.get(0), 100, "Completed"));
 		
+		this.controller = controller;
 	}
 	
 	@Override
-	public User registerUser(String username) {
-		User user = new User(0, username);
+	public void registerUser(String username) {
+		User myUser = new User(-1, username);
 		
-		return user;
+		controller.registerMyUser(myUser);
 	}
 	
 	@Override
-	public ArrayList<User> getUsers() {
-		// TODO Auto-generated method stub
-		return this.users;
+	public void getUsers() {
+		controller.updateUsers(this.users);		
 	}
 
 	@Override
-	public ArrayList<File> getFiles(Integer userID) {
-		// TODO Auto-generated method stub
+	public void getFiles(Integer userID) {
 		if (userID == 0)
-			return this.u1;
+			controller.updateFiles(this.u1);
 		
 		if (userID == 1)
-			return this.u2;
+			controller.updateFiles(this.u2);
 		
-		return this.u3;
+		controller.updateFiles(this.u3);
 	}
 
 	@Override
-	public ArrayList<Transfer> getTransfers(Integer userID) {
-		// TODO Auto-generated method stub
-		return this.tr;
+	public void getTransfers(Integer userID) {
+		controller.updateTransfers(tr);
+	}
+	
+	public void updateTransfer(Transfer transfer){
+		
 	}
 }

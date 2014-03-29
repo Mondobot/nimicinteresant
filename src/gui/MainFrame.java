@@ -29,7 +29,7 @@ import controller.Controller;
 import observer.IFileListener;
 import observer.ITransferListener;
 import observer.IUserListener;
-import mediator.Mediator;
+import mediator.IMediator;
 import mediator.MediatorMock;
 import model.File;
 import model.Model;
@@ -52,7 +52,7 @@ class ProgressRenderer extends DefaultTableCellRenderer {
         String text = "Completed";
         if (i < 0) {
             text = "Error";
-        } else if (i < 100) {
+        } else if (i <= 100) {
             b.setValue(i);
             return b;
         }
@@ -62,33 +62,36 @@ class ProgressRenderer extends DefaultTableCellRenderer {
 }
 
 public class MainFrame extends javax.swing.JFrame {
-	private Controller controller;
+	private IMediator mediator;
 	
     DefaultListModel<Object> usersModel = new DefaultListModel<>();
     DefaultListModel<Object> filesModel = new DefaultListModel<>();
-    DefaultTableModel transfersModel = new DefaultTableModel();
+    DefaultTableModel transfersModel = new DefaultTableModel(){
+    	@Override
+    	public boolean isCellEditable(int row, int column) {
+    		return false;
+    	};
+    };
+    
+    static String myUser;
     
     public MainFrame() {
         initComponents();
         designView();
-        
-        controller = new Controller(new MediatorMock());
-        controller.registerMyUser("test");
-        
+        registerController();
         addListeners();    
         getListsFromServer();
     }
     
     private void getListsFromServer() {
-    	controller.updateUsers();
-    	controller.updateFiles(usersModel.get(0).toString());
-    	controller.updateTransfers();
+    	mediator.getUsers();
+    	mediator.getFiles(((User)usersModel.get(0)).getId());
+    	mediator.getTransfers(-1);
     }
     
     private void designView(){
     	setLocationRelativeTo(null);
     	setResizable(false);
-    	setTitle("Tema 1");
     	Toolkit tk = Toolkit.getDefaultToolkit();  
         int xSize = ((int) tk.getScreenSize().getWidth());  
         int ySize = ((int) tk.getScreenSize().getHeight());  
@@ -106,6 +109,23 @@ public class MainFrame extends javax.swing.JFrame {
         jTable1.setPreferredScrollableViewportSize(jTable1.getPreferredSize());
         jTable1.setFillsViewportHeight(true);
         jTable1.getColumnModel().getColumn(3).setCellRenderer(new ProgressRenderer());
+    }
+    
+    private void registerController(){
+    	mediator = new MediatorMock(new Controller());
+    	String title;
+        if (myUser != null) {
+        	mediator.registerUser(myUser);
+        	title = "Sharix - " + myUser;;
+        }
+        else {
+        	mediator.registerUser("test");
+        	title = "Sharix - test";;
+        	/*System.err.println("Please add your username as an argument in the command line!");
+        	System.exit(0);*/
+        }  
+         
+        setTitle(title);
     }
     
     private void addListeners(){
@@ -137,7 +157,7 @@ public class MainFrame extends javax.swing.JFrame {
         	public void mouseClicked(MouseEvent evt) {
         		if (evt.getClickCount() == 2) {
         			JList x = (JList)evt.getSource();
-        			controller.updateFiles(usersModel.get(x.locationToIndex(evt.getPoint())).toString());
+        			mediator.getFiles(((User)usersModel.get(x.locationToIndex(evt.getPoint()))).getId());
         		}
         	}
 		});
@@ -145,7 +165,6 @@ public class MainFrame extends javax.swing.JFrame {
     
     private void updateUsersList(List<User> users) {
     	usersModel.clear();
-    	System.out.println(users.size() + " gui");
     	for (User user: users)
     		usersModel.addElement(user);  
     }
@@ -164,14 +183,7 @@ public class MainFrame extends javax.swing.JFrame {
     		row[1] = transfer.getDest();
     		row[2] = transfer.getCargo();
     		row[3] = transfer.getProgress();
-    		if (transfer.getProgress() < 100) {
-    			if (transfer.getSource() == Model.getInstance().getMyUser())
-    				row[4] = "Sending...";
-    			else if (transfer.getDest() == Model.getInstance().getMyUser())
-    				row[4] = "Receiving...";
-    		}
-    		else if (transfer.getProgress() == 100) 
-    			row[4] = "Completed";    		
+    		row[4] = transfer.getStatus();		
     		
     		transfersModel.addRow(row);
     	}
@@ -300,7 +312,9 @@ public class MainFrame extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        if (args.length == 1)
+        	myUser = args[0];
+        
         java.awt.EventQueue.invokeLater(new Runnable() {
 
             public void run() {

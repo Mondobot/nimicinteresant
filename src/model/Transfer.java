@@ -1,27 +1,27 @@
 package model;
 
 public class Transfer {
-	Integer ID;
+	int ID;
 	File cargo;
 	User source;
 	User dest;
-	Integer progress;
+	int progress;
 	String status;
 	
-	public Transfer(Integer ID, File cargo, User source, User dest) {
+	public Transfer(int ID, User source, User dest, File cargo, int progress, String status) {
 		this.ID = ID;
 		this.cargo = cargo;
 		this.source = source;
 		this.dest = dest;
-		this.progress = 0;
-		this.status = "None";
+		this.progress = progress;
+		this.status = status;
 	}
 	
-	public Integer getID() {
+	public int getID() {
 		return this.ID;
 	}
 	
-	public void setID(Integer newID) {
+	public void setID(int newID) {
 		this.ID = newID;
 	}
 	
@@ -49,11 +49,11 @@ public class Transfer {
 		this.dest = dest;
 	}
 
-	public Integer getProgress() {
+	public int getProgress() {
 		return progress;
 	}
 
-	public void setProgress(Integer progress) {
+	public void setProgress(int progress) {
 		this.progress = progress;
 	}
 	
