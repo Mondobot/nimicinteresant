@@ -1,0 +1,59 @@
+// Copyright NoName 2014
+// NoName is:
+// 	Coordonator: Eduard Dorobantu 341C5
+//	Inginer: Matei Pavaluca 342C3
+
+Sabloane de proiectare folosite:
+   * MVC:
+	- Model:
+		- Users(Name + UserID)
+		- Files(Name + FileID + UserID)
+		- Transfers(File + UserS + UserD + TransfID + Progress)
+		- myUser
+
+		- setUsers(lista Users)
+		- getUsers()
+		- setTransfers(lista Transfers)
+		- getTransfers()
+		- updateTransfer(Transfer)
+		- setFiles(lista Files)
+		- getFiles()
+		- getMyUser()
+		- setMyUser()
+
+	- Controller:
+		- updateUsers(lista Users)
+		- updateFiles(lista Files)
+		- updateTransfers(lista Transfers)
+		- updateTransfer(Transfer)
+
+	- View:
+		- addListeners()
+    
+    Motivatie:
+	Am optat pentru un model MVC intrucat acesta ofera flexibilitate
+    pastrand totusi un design robust si permitand extensibilitate.
+  
+
+    * Mediator
+	- Mediator:
+		- registerUser(name)
+		- getUsers()
+		- getFiles(UserID)
+		- getTransfers()
+		- updateTransfers(Transfer)
+
+    Motivatie:
+	Din seria sabloanelor de proiectare si pentru ca decuplare intre clase.
+
+
+    * Observer
+    Motivatie:
+        Pentru a face updatarea automata a View-ului sau invocarea functiilor din Controller
+    la apasarea butoanelor
+
+    * Singleton:
+       - Modelul
+    
+    Motivatie:
+	Pentru a garanta instantierea unei singure instante a clasei Model.
