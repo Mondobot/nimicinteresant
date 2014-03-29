@@ -59,6 +59,14 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 	public List<Transfer> getTransfers() {
 		return transfers;
 	}
+	
+	public void updateTransfer(Transfer newTransfer) {
+		for (Transfer transfer: transfers)
+			if (transfer.getID() == newTransfer.getID()) {
+				transfer = newTransfer;
+				notifyListenersTransfersUpdated();
+			}
+	}
 
 	@Override
 	public void addUserListener(IUserListener userListener) {

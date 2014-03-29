@@ -3,6 +3,8 @@ package mediator;
 import java.util.ArrayList;
 import java.util.List;
 
+import worker.TransferTask;
+
 import controller.Controller;
 
 import model.File;
@@ -60,10 +62,14 @@ public class MediatorMock implements IMediator {
 
 	@Override
 	public void getTransfers(Integer userID) {
+		for (Transfer transfer : tr){
+			TransferTask transferTask = new TransferTask(transfer.getProgress());
+			transferTask.execute();
+		}
 		controller.updateTransfers(tr);
 	}
 	
-	public void updateTransfer(Transfer transfer){
-		
+	public void updateTransfer(Transfer newTransfer){
+		controller.updateTransfer(newTransfer);
 	}
 }

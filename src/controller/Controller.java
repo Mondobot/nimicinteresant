@@ -26,10 +26,10 @@ public class Controller {
 	}
 	
 	public void updateTransfers(List<Transfer> newTransfers) {
-		for (Transfer transfer : newTransfers){
-			TransferTask transferTask = new TransferTask(transfer.getProgress());
-			transferTask.execute();
-		}
 		Model.getInstance().setTransfers(newTransfers);
+	}
+	
+	public void updateTransfer(Transfer newTransfer) {
+		updateTransfer(newTransfer);
 	}
 }
