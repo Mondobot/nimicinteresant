@@ -30,7 +30,7 @@ public class MediatorMock implements IMediator {
 		u3.add(new File("I did Nazi that coming", 3, users.get(2)));
 		
 		tr.add(new Transfer(0, users.get(0), users.get(2), u1.get(0), 80, "Completed"));
-		tr.add(new Transfer(1, users.get(2), users.get(1), u3.get(0), 100, "Completed"));
+		tr.add(new Transfer(1, users.get(1), users.get(2), u3.get(0), 100, "Completed"));
 		
 		this.controller = controller;
 	}
