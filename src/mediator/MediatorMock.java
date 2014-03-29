@@ -31,7 +31,7 @@ public class MediatorMock implements IMediator {
 		u3.add(new File("You can't read this, I have Enigma", 2, users.get(2)));
 		u3.add(new File("I did Nazi that coming", 3, users.get(2)));
 		
-		tr.add(new Transfer(0, users.get(0), users.get(2), u1.get(0), 80, "Completed"));
+		tr.add(new Transfer(0, users.get(0), users.get(2), u1.get(0), 10, "Sending..."));
 		tr.add(new Transfer(1, users.get(1), users.get(2), u3.get(0), 100, "Completed"));
 		
 		this.controller = controller;
@@ -64,12 +64,13 @@ public class MediatorMock implements IMediator {
 	@Override
 	public void getTransfers(Integer userID) {
 		for (Transfer transfer : tr){
-			TransferTask transferTask = new TransferTask(transfer.getProgress());
+			TransferTask transferTask = new TransferTask(this, transfer);
 			transferTask.execute();
 		}
 		controller.updateTransfers(tr);
 	}
 	
+	@Override
 	public void updateTransfer(Transfer newTransfer){
 		controller.updateTransfer(newTransfer);
 	}

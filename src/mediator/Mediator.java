@@ -33,5 +33,9 @@ public class Mediator implements IMediator{
 		
 	}
 	
+	public void updateTransfer(Transfer newTransfer) {
+		
+	}
+	
 	
 }

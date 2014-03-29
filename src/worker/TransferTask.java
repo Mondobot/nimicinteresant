@@ -4,12 +4,17 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import mediator.IMediator;
+import model.Transfer;
+
 public class TransferTask extends SwingWorker<Integer, Integer> {
 	  private static final int DELAY = 1000;
-	  private int progress;
+	  private Transfer transfer;
+	  private IMediator mediator;
 
-	  public TransferTask(int progress) {
-		  this.progress = progress;
+	  public TransferTask(IMediator mediator, Transfer transfer) {
+		  this.mediator = mediator;
+		  this.transfer = transfer;
 	  }
 
 	  @Override
@@ -17,9 +22,10 @@ public class TransferTask extends SwingWorker<Integer, Integer> {
 		  boolean done = false;
 		  while (!done) {
 			  Thread.sleep(DELAY);
-			  progress += 5;
-			  if (progress > 100) {
-				  progress = 100;
+			  transfer.setProgress(transfer.getProgress() + 5);
+			  if (transfer.getProgress() >= 100) {
+				  transfer.setProgress(100);
+				  transfer.setStatus("Completed");
 				  done = true;
 			  }
 			  publish();
@@ -29,7 +35,7 @@ public class TransferTask extends SwingWorker<Integer, Integer> {
 	  }
 	   
 	  protected void process(List<Integer> chunks) {
-		  
+		  mediator.updateTransfer(transfer);
 	  }
 
 	  @Override

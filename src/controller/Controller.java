@@ -30,6 +30,6 @@ public class Controller {
 	}
 	
 	public void updateTransfer(Transfer newTransfer) {
-		updateTransfer(newTransfer);
+		Model.getInstance().updateTransfer(newTransfer);
 	}
 }

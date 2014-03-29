@@ -13,4 +13,5 @@ public interface IMediator {
 	void getUsers();
 	void getFiles(Integer userID);
 	void getTransfers(Integer userID);	
+	void updateTransfer(Transfer newTransfer);
 }
