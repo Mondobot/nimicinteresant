@@ -15,6 +15,13 @@ public class ReadLists {
 	List<model.File> u2 = new ArrayList<>();
 	List<model.File> u3 = new ArrayList<>();
 	
+	public ReadLists(List<User> users, List<model.File> u1, List<model.File> u2, List<model.File> u3) {
+		this.users = users;
+		this.u1 = u1;
+		this.u2 = u2;
+		this.u3 = u3;
+	}
+	
 	public void read(){
 		String filesPath = getFilesPath();
 		getUsersAndFiles(filesPath);
@@ -58,6 +65,7 @@ public class ReadLists {
 						u2.add(new model.File(filename, 0, newUser));
 					if (id == 2)
 						u3.add(new model.File(filename, 0, newUser));
+					filename = br.readLine();
 				}
 				
 				id++;

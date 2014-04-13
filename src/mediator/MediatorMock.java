@@ -24,8 +24,8 @@ public class MediatorMock implements IMediator {
 	Controller controller;
 	
 	public MediatorMock(Controller controller) {
-		new ReadLists().read();
-		users.add(new User(0, "Churchill"));
+		new ReadLists(users, u1, u2, u3).read();
+/*		users.add(new User(0, "Churchill"));
 		users.add(new User(3, "Hitler"));
 		users.add(new User(1, "Stalin"));
 		
@@ -35,7 +35,7 @@ public class MediatorMock implements IMediator {
 		u3.add(new File("I did Nazi that coming", 3, users.get(2)));
 		
 		tr.add(new Transfer(0, users.get(0), users.get(2), u1.get(0), 10, "Sending..."));
-		tr.add(new Transfer(1, users.get(1), users.get(2), u3.get(0), 100, "Completed"));
+		tr.add(new Transfer(1, users.get(1), users.get(2), u3.get(0), 100, "Completed"));*/
 		
 		this.controller = controller;
 	}
@@ -60,7 +60,7 @@ public class MediatorMock implements IMediator {
 		if (userID == 1)
 			controller.updateFiles(this.u2);
 		
-		if (userID == 3)
+		if (userID == 2)
 			controller.updateFiles(this.u3);
 	}
 
