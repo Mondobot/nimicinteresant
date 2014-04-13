@@ -7,28 +7,23 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Server {
+public class Dispatcher extends Thread{
 	
 	public static final int BUF_SIZE	= 4;			// buffer size
 	public static final String IP		= "127.0.0.1";	// server IP
 	public static final int PORT		= 30009;		// server port
+	private ArrayList<SocketHandler> socketHandlers = new ArrayList<SocketHandler>();
 	
 	public static ExecutorService pool = Executors.newFixedThreadPool(5);	// thread pool - 5 threads
 	
-	public static void accept(SelectionKey key) throws IOException {
+	public void accept(SelectionKey key) throws IOException {
 		System.out.print("ACCEPT: ");
+		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); 
 		
-		// TODO 2.6: register new socket with selector, use 'buf' as attachment
+		SocketHandler socketHandler = new SocketHandler(serverSocketChannel);
+		socketHandler.start();
+		socketHandlers.add(socketHandler);
 		
-		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); // initialize from key
-		SocketChannel socketChannel = serverSocketChannel.accept();				// initialize from accept
-		socketChannel.configureBlocking(false);
-		
-		ByteBuffer buf = ByteBuffer.allocateDirect(BUF_SIZE);
-		socketChannel.register(key.selector(), SelectionKey.OP_READ, buf);
-		
-		// display remote client address
-		System.out.println("Connection from: " + socketChannel.socket().getRemoteSocketAddress());
 	}
 	
 	public static void read(SelectionKey key) throws IOException {
@@ -43,6 +38,7 @@ public class Server {
 		WritableByteChannel outChannel = Channels.newChannel(System.out);
 		
 		buf.clear();
+		
 		// TODO 2.8: read from socket into buffer, use a loop
 		while ((bytes = socketChannel.read(buf)) > 0){
 			if (!buf.hasRemaining()) {
@@ -68,13 +64,11 @@ public class Server {
 		// TODO 2.11: write from buffer to socket, use a loop
 	}
 	
-	public static void main(String[] args) {
-		
+	public void run() {
 		Selector selector						= null;
 		ServerSocketChannel serverSocketChannel	= null;
 		
 		try {
-			// TODO 2.2: init selector
 			selector = Selector.open();
 			
 			// TODO 2.3: init server socket and register it with the selector
@@ -84,10 +78,8 @@ public class Server {
 			serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 			 
 			SocketChannel socketChannel = serverSocketChannel.accept();              
-			
-			// main loop
+						
 			while (true) {
-				// wait for something to happen
 				selector.select();
 				
 				// iterate over the events
@@ -98,10 +90,8 @@ public class Server {
 					
 					if (key.isAcceptable())
 						accept(key);
-					else if (key.isReadable())
-						read(key);
-					else if (key.isWritable())
-						write(key);
+					else 
+						System.out.println("Error! Bad request on dispatcher!");
 				}
 			}
 			
@@ -110,7 +100,6 @@ public class Server {
 			
 		} finally {
 			// cleanup
-			
 			if (selector != null)
 				try {
 					selector.close();
@@ -121,7 +110,5 @@ public class Server {
 					serverSocketChannel.close();
 				} catch (IOException e) {}
 		}
-
 	}
-
 }
