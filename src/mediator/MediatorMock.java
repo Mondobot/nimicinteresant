@@ -3,6 +3,8 @@ package mediator;
 import java.util.ArrayList;
 import java.util.List;
 
+import staticlists.ReadLists;
+
 import worker.TransferTask;
 
 import controller.Controller;
@@ -22,6 +24,7 @@ public class MediatorMock implements IMediator {
 	Controller controller;
 	
 	public MediatorMock(Controller controller) {
+		new ReadLists().read();
 		users.add(new User(0, "Churchill"));
 		users.add(new User(3, "Hitler"));
 		users.add(new User(1, "Stalin"));
