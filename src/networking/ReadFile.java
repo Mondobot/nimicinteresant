@@ -1,20 +1,43 @@
 package networking;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
-public class ReadFile {
-	public void main(String fileName) throws IOException {
-				
-		File file = new File(fileName);
-		long fileLength = file.length();
-		RandomAccessFile aFile = new RandomAccessFile(fileName, "rw");
+public class FileHandler {
+	RandomAccessFile afile;
+	FileChannel channel;
+	long length;
+	String op;
+	
+	
+	public FileHandler(String relativePath, String ops) {	
+		File tmpFile = new File(relativePath);
+		this.length = tmpFile.length();
+		
+		if (ops.equals("w")) {
+			this.op = "w";
+			if (!tmpFile.exists()) {
+				tmpFile.createNewFile();
+			}
+		
+		} else if (ops.equals("r")) {
+			this.op = "r";
+		}
+		
+		try {
+			this.aFile = new RandomAccessFile(tmpFile, this.op);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Invalid file \"" + relativePath + "\"");
+			e.printStackTrace();
+		}
 
-	    FileChannel inChannel = aFile.getChannel();
+	    this.channel = this.aFile.getChannel();
 	    MappedByteBuffer memBuf	= inChannel.map(FileChannel.MapMode.READ_WRITE, 0, inChannel.size());
 
 	    ByteBuffer buf = ByteBuffer.allocate(48);
