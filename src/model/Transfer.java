@@ -1,20 +1,32 @@
 package model;
 
+import networking.MsgHandler;
+
 public class Transfer {
 	int ID;
-	File cargo;
+	MsgHandler cargo;
 	User source;
 	User dest;
 	int progress;
 	String status;
 	
-	public Transfer(int ID, User source, User dest, File cargo, int progress, String status) {
+	String DWNLD = "Downloading";
+	String UPLD = "Uploading";
+	String CMPLT = "Completed";
+	
+	
+	public Transfer(int ID, User source, User dest, MsgHandler cargo, int progress, String status) {
 		this.ID = ID;
 		this.cargo = cargo;
 		this.source = source;
 		this.dest = dest;
 		this.progress = progress;
-		this.status = status;
+		
+		if (status.equals(this.DWNLD) || status.equals(this.UPLD) || status.equals(CMPLT))
+			this.status = status;
+		
+		else
+			System.out.println("Error! Invalid state for transfer");
 	}
 	
 	public int getID() {
@@ -33,11 +45,11 @@ public class Transfer {
 		this.source = newSource;
 	}
 
-	public File getCargo() {
+	public MsgHandler getCargo() {
 		return cargo;
 	}
 
-	public void setCargo(File cargo) {
+	public void setCargo(MsgHandler cargo) {
 		this.cargo = cargo;
 	}
 
