@@ -6,6 +6,7 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.PriorityQueue;
 
 import model.Transfer;
@@ -16,11 +17,14 @@ public class SocketHandler extends Thread{
 	Selector selector;
 	ByteBuffer sockBuf, msgBuf;
 	PriorityQueue<Transfer> sendQ, recvQ;
+	boolean active;
 	
 	public SocketHandler(ServerSocketChannel serverSocketChannel) throws IOException {
+		this.active = true;
+		
 		this.socket = serverSocketChannel.accept();				
-
 		this.socket.configureBlocking(false);
+		
 		this.sockBuf = ByteBuffer.allocateDirect(BUF_SIZE);
 		this.msgBuf = ByteBuffer.allocateDirect(BUF_SIZE - 5);
 		
@@ -39,7 +43,7 @@ public class SocketHandler extends Thread{
 		System.out.println("Actual size: " + this.sockBuf.capacity() + "\n");
 	}
 	
-	public void recv(SelectionKey key) throws IOException {
+	public void recv() throws IOException {
 		int bytes;
 		//WritableByteChannel outChannel = Channels.newChannel(System.out);
 		
@@ -60,7 +64,7 @@ public class SocketHandler extends Thread{
 		}
 	}
 	
-	public void send(SelectionKey key) throws IOException {
+	public void send() throws IOException {
 		Transfer current = this.sendQ.peek();
 		MsgHandler currentHandler = current.getCargo();
 		
@@ -75,6 +79,53 @@ public class SocketHandler extends Thread{
 	}
 	
 	public void run() {
+		while (this.active) {
+			try {
+				this.selector.select();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				break;
+			}
+			
+			// iterate over the events
+			for (Iterator<SelectionKey> it = this.selector.selectedKeys().iterator(); it.hasNext(); ) {
+				// get current event and REMOVE it from the list!!!
+				SelectionKey key = it.next();
+				it.remove();
+				
+				if (key.isReadable()) {
+					try {
+						recv();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						continue;
+					}
+				
+				} else if (key.isWritable()) {
+					try {
+						send();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						continue;
+					}
+					
+				} else {
+					System.out.println("Error! Bad request on dispatcher!");
+				}
+			}
+		}
 		
+		if (this.selector != null)
+			try {
+				this.selector.close();
+			} catch (IOException e) {}
+		
+		if (this.socket != null)
+			try {
+				this.socket.close();
+			} catch (IOException e) {}
 	}	
 }
