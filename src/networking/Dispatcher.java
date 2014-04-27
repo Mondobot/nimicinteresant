@@ -20,8 +20,11 @@ public class Dispatcher extends Thread{
 		System.out.print("ACCEPT: ");
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); 
 		
+		System.out.println("Cevaa");
 		SocketHandler socketHandler = new SocketHandler(serverSocketChannel);
-		socketHandler.start();
+		
+		System.out.println("Altceva");
+		socketHandler.run();
 		socketHandlers.add(socketHandler);
 		
 	}
@@ -72,5 +75,11 @@ public class Dispatcher extends Thread{
 					serverSocketChannel.close();
 				} catch (IOException e) {}
 		}
+	}
+	
+	public static void main(String args[]) {
+		System.out.println("Hehe");
+		Dispatcher x = new Dispatcher();
+		x.run();
 	}
 }

@@ -1,7 +1,7 @@
 package networking;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.nio.*;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -13,8 +13,8 @@ import model.Transfer;
 
 public class SocketHandler extends Thread{
 	int BUF_SIZE = 55;
-	SocketChannel socket;
-	Selector selector;
+	SocketChannel socket = null;
+	Selector selector = null;
 	ByteBuffer sockBuf, msgBuf;
 	PriorityQueue<Transfer> sendQ, recvQ;
 	boolean active;
@@ -25,8 +25,13 @@ public class SocketHandler extends Thread{
 		this.socket = serverSocketChannel.accept();				
 		this.socket.configureBlocking(false);
 		
-		this.sockBuf = ByteBuffer.allocateDirect(BUF_SIZE);
-		this.msgBuf = ByteBuffer.allocateDirect(BUF_SIZE - 5);
+//		ByteToC
+	//	this.sockBuf = new CharBuffer() ;//= StringBuffer.allocateDirect(BUF_SIZE);
+		//this.msgBuf = new StringBuffer();//= StringBuffer.allocateDirect(BUF_SIZE - 5);
+				
+		this.sockBuf = ByteBuffer.allocate(BUF_SIZE);
+		this.msgBuf = ByteBuffer.allocate(BUF_SIZE - 5);
+		this.selector = Selector.open();
 		
 		this.socket.register(this.selector, SelectionKey.OP_READ, this.sockBuf);
 		
@@ -37,8 +42,9 @@ public class SocketHandler extends Thread{
 	}
 	
 	private void parseMessage(){
-		System.out.println("Message size: " + this.sockBuf.getInt());
-		System.out.println("Message type: " + this.sockBuf.getInt());
+		System.out.println(this.sockBuf.position());
+		System.out.println("Message size: " + this.sockBuf.get());
+		System.out.println("Message type: " + this.sockBuf.getChar());
 		
 		System.out.println("Actual size: " + this.sockBuf.capacity() + "\n");
 	}
@@ -47,10 +53,10 @@ public class SocketHandler extends Thread{
 		int bytes;
 		//WritableByteChannel outChannel = Channels.newChannel(System.out);
 		
-		this.msgBuf.clear();
+		this.sockBuf.clear();
 		
 		// TODO 2.8: read from socket into buffer, use a loop
-		while ((bytes = this.socket.read(this.msgBuf)) > 0){
+		while ((bytes = this.socket.read(this.sockBuf)) > 0){
 			/*if (!buf.hasRemaining()) {
 				buf.flip();
 				outChannel.write(buf);
