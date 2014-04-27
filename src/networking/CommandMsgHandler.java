@@ -4,10 +4,12 @@ import java.nio.ByteBuffer;
 
 public class CommandMsgHandler extends MsgHandler {
 	String msg;
+	boolean sent;
 	
 	public CommandMsgHandler(int type, String ops, String msg) {
 		super(type, ops);
 		this.msg = msg;
+		this.sent = false;
 	}
 
 	public String getMsg() {
@@ -25,11 +27,11 @@ public class CommandMsgHandler extends MsgHandler {
 	    
 		into.clear();
 		int bytesRead = 0;		
-		if (into.remaining() < this.msg.length()) {
+		if (!this.sent && into.remaining() < this.msg.length()) {
 			System.out.println("Command msg len is < than buffer!");
 			return -1;
 			
-		} else {
+		} else if (!this.sent) {
 			bytesRead = this.msg.length();
 			
 			int pos = 0;
@@ -37,6 +39,8 @@ public class CommandMsgHandler extends MsgHandler {
 				into.putChar(this.msg.charAt(pos));
 				++pos;
 			}
+			
+			this.sent = true;
 		}
 	
 		into.flip();	

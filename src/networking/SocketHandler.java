@@ -2,6 +2,7 @@ package networking;
 
 import java.io.IOException;
 import java.nio.*;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
@@ -12,6 +13,7 @@ import java.util.PriorityQueue;
 import model.Transfer;
 
 public class SocketHandler extends Thread{
+	int ID;
 	int BUF_SIZE = 55;
 	SocketChannel socket = null;
 	Selector selector = null;
@@ -19,12 +21,13 @@ public class SocketHandler extends Thread{
 	PriorityQueue<Transfer> sendQ, recvQ;
 	boolean active;
 	
-	public SocketHandler(ServerSocketChannel serverSocketChannel) throws IOException {
-		this.active = true;
-		
+	public SocketHandler() throws IOException {
+		this.active = false;
+		this.ID = (int)(Math.random() * 100);
+	/*	
 		this.socket = serverSocketChannel.accept();				
 		this.socket.configureBlocking(false);
-		
+	*/	
 //		ByteToC
 	//	this.sockBuf = new CharBuffer() ;//= StringBuffer.allocateDirect(BUF_SIZE);
 		//this.msgBuf = new StringBuffer();//= StringBuffer.allocateDirect(BUF_SIZE - 5);
@@ -33,24 +36,54 @@ public class SocketHandler extends Thread{
 		this.msgBuf = ByteBuffer.allocate(BUF_SIZE - 5);
 		this.selector = Selector.open();
 		
-		this.socket.register(this.selector, SelectionKey.OP_READ, this.sockBuf);
-		
 		this.sendQ = new PriorityQueue<Transfer>();
 		this.recvQ = new PriorityQueue<Transfer>();
 		
-		System.out.println("Connection from: " + this.socket.socket().getRemoteSocketAddress());
+		}
+	
+	public void setSocket(SocketChannel newSocket) throws ClosedChannelException {
+		this.socket = newSocket;
+		
+		this.socket.register(this.selector, SelectionKey.OP_READ | SelectionKey.OP_WRITE, this.sockBuf);
+		System.out.println("Connected to: " + this.socket.socket().getRemoteSocketAddress());
+		
+		
+		if (!this.active)
+			this.active = true;
+		
+
 	}
 	
 	private void parseMessage(){
 		System.out.println(this.sockBuf.position());
-		System.out.println("Message size: " + this.sockBuf.get());
-		System.out.println("Message type: " + this.sockBuf.getChar());
 		
-		System.out.println("Actual size: " + this.sockBuf.capacity() + "\n");
+	/*	this.sockBuf.clear();
+		this.sockBuf.putChar('\0');
+		this.sockBuf.putChar('N');
+		this.sockBuf.putChar('\0');
+		this.sockBuf.putChar('N');
+	*/
+	//	this.sockBuf.putChar('N');
+	//	this.sockBuf.putChar('N');
+
+		//this.sockBuf.flip();
+		int size = this.sockBuf.getInt();
+		
+		System.out.println("Message size: " + size);
+		System.out.println("Message type: " + this.sockBuf.getInt());
+		
+		String x = "";
+		for (int i = 0; i < size; ++i)
+			x += this.sockBuf.getChar();
+		
+		System.out.println(x);
+		System.out.println(this.sockBuf.position());
+		
+		System.out.println("Actual size: " + this.sockBuf.limit() + "\n");
 	}
 	
 	public void recv() throws IOException {
-		int bytes;
+		int bytes = 0;
 		//WritableByteChannel outChannel = Channels.newChannel(System.out);
 		
 		this.sockBuf.clear();
@@ -70,11 +103,27 @@ public class SocketHandler extends Thread{
 		}
 	}
 	
-	public void send() throws IOException {
+	public void send() throws Exception {
 		Transfer current = this.sendQ.peek();
+		
+		//System.out.println(this.ID);
+		if (current == null) {
+			//System.out.println("Ie null" + this.ID);
+			
+			return;
+		}
 		MsgHandler currentHandler = current.getCargo();
 		
 		int bytes = currentHandler.read(this.msgBuf);
+		System.out.println("Sending " + bytes);
+		
+		if (bytes == 0) {
+			System.out.println("Cleaning");
+			current.setProgress(100);
+			current.setStatus(Transfer.CMPLT);
+			this.sendQ.remove();
+		}
+		
 		this.sockBuf.clear();
 		this.sockBuf.putInt(bytes);
 		this.sockBuf.putInt(currentHandler.getType());
@@ -85,6 +134,10 @@ public class SocketHandler extends Thread{
 	}
 	
 	public void run() {
+		if (!this.active) {
+			System.out.println("Inactive socket");
+		}
+		
 		while (this.active) {
 			try {
 				this.selector.select();
@@ -112,7 +165,7 @@ public class SocketHandler extends Thread{
 				} else if (key.isWritable()) {
 					try {
 						send();
-					} catch (IOException e) {
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 						continue;

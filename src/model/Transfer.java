@@ -10,9 +10,9 @@ public class Transfer {
 	int progress;
 	String status;
 	
-	String DWNLD = "Downloading";
-	String UPLD = "Uploading";
-	String CMPLT = "Completed";
+	public static String DWNLD = "Downloading";
+	public static String UPLD = "Uploading";
+	public static String CMPLT = "Completed";
 	
 	
 	public Transfer(int ID, User source, User dest, MsgHandler cargo, int progress, String status) {
@@ -22,7 +22,7 @@ public class Transfer {
 		this.dest = dest;
 		this.progress = progress;
 		
-		if (status.equals(this.DWNLD) || status.equals(this.UPLD) || status.equals(CMPLT))
+		if (status.equals(Transfer.DWNLD) || status.equals(Transfer.UPLD) || status.equals(Transfer.CMPLT))
 			this.status = status;
 		
 		else
