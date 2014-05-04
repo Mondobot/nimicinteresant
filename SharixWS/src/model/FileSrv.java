@@ -1,11 +1,18 @@
 package model;
 
-public class File {
+import java.io.Serializable;
+
+public class FileSrv implements Serializable {
+	private static final long serialVersionUID = 1000000001L;
+	
 	int id;
 	String name;
 	int owner;
 	
-	public File(int id, String name, int owner) {
+	public FileSrv() {
+	}
+	
+	public FileSrv(int id, String name, int owner) {
 		this.name = name;
 		this.id = id;
 		this.owner = owner;

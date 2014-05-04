@@ -1,10 +1,17 @@
 package model;
 
-public class User{
+import java.io.Serializable;
+
+public class UserSrv implements Serializable{
+	private static final long serialVersionUID = 1000000003L;
+	
 	int id;
 	String name;
 	
-	public User(int id, String name) {
+	public UserSrv() {
+	}
+	
+	public UserSrv(int id, String name) {
 		this.name = name;
 		this.id = id;
 	}

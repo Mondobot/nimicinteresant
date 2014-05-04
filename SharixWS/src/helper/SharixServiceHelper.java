@@ -1,6 +1,6 @@
 package helper;
 
-public class MainHelper {
+public class SharixServiceHelper {
 	private static int userId;
 	private static int fileId;
 	
