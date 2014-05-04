@@ -60,11 +60,11 @@ public class ReadLists {
 				String filename = br.readLine();
 				while (filename != null) {
 					if (id == 0)
-						u1.add(new model.File(filename, 0, newUser));
+						u1.add(new model.File(filename, 0, newUser.getId()));
 					if (id == 1)
-						u2.add(new model.File(filename, 0, newUser));
+						u2.add(new model.File(filename, 0, newUser.getId()));
 					if (id == 2)
-						u3.add(new model.File(filename, 0, newUser));
+						u3.add(new model.File(filename, 0, newUser.getId()));
 					filename = br.readLine();
 				}
 				

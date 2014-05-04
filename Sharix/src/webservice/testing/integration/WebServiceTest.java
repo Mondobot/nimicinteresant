@@ -1,19 +1,19 @@
 package webservice.testing.integration;
 
-import java.rmi.RemoteException;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.axis2.AxisFault;
+import model.File;
+import model.User;
 
 import junit.framework.Assert;
-import junit.framework.TestCase;
-import junit.framework.TestResult;
 
-import webservice.ops.SharixServiceStub;
-import webservice.ops.SharixServiceStub.*;
+import webservice.handlers.SharixServiceStub;
+import webservice.ops.SharixWS;
 
 public class WebServiceTest {
 	static SharixServiceStub serviceStub;
-	static UserSrv userSrv;
+	static User user;
 	
 	public static void main(String []args) throws Exception{
 		serviceStub = new SharixServiceStub();
@@ -27,59 +27,44 @@ public class WebServiceTest {
 	}
 	
 	public static void testRegisterUser() throws Exception {
-		RegisterNewUser registerUser = new RegisterNewUser();
-		registerUser.setName("user_proba");
+		user = SharixWS.getInstanceOf().registerUser("user_proba");
 		
-		userSrv = serviceStub.registerNewUser(registerUser).get_return();
-		
-		Assert.assertTrue(userSrv.getName().equals("user_proba"));
+		Assert.assertTrue(user.getName().equals("user_proba"));
 	}
 	
 	public static void testRegisterSameUser() throws Exception {
-		RegisterNewUser registerUser = new RegisterNewUser();
-		registerUser.setName("user_proba");
+		User sameUser = SharixWS.getInstanceOf().registerUser("user_proba");
 		
-		UserSrv result = serviceStub.registerNewUser(registerUser).get_return();
-		
-		Assert.assertTrue(result == null);
+		Assert.assertTrue(sameUser == null);
 	}
 	
 	public static void testGetConnectedUsers() throws Exception {
-		GetConnectedUsers getConnectedUsers = new GetConnectedUsers();
+		List<User> users = SharixWS.getInstanceOf().getUsers();
 		
-		UserSrv []usersSrv = serviceStub.getConnectedUsers(getConnectedUsers).get_return();
-		
-		Assert.assertTrue(usersSrv.length == 1);
+		Assert.assertTrue(users.size() == 1);
 	}
 	
 	public static void testRegisterFilesByUser() throws Exception {
-		RegisterFilesByUser registerFilesByUser = new RegisterFilesByUser();
-		String []fileNames = new String[]{"file1", "file2", "file3"};
+		List <String> fileNames = new ArrayList<>();
+		fileNames.add("file1");
+		fileNames.add("file2");
+		fileNames.add("file3");
 
-		registerFilesByUser.setIdUser(userSrv.getId());
-		registerFilesByUser.setFileNames(fileNames);
-		
-		FileSrv []filesSrv = serviceStub.registerFilesByUser(registerFilesByUser).get_return();
+		List<File> files = SharixWS.getInstanceOf().registerFilesByUser(user.getId(), fileNames);
 			
-		Assert.assertTrue(filesSrv.length == 3);
-		Assert.assertTrue(filesSrv[0].getName().equals("file1"));
+		Assert.assertTrue(files.size() == 3);
+		Assert.assertTrue(files.get(0).getName().equals("file1"));
 	}
 	
 	public static void testGetFilesByUser() throws Exception {
-		GetFilesByUser getFilesByUser = new GetFilesByUser();
-		getFilesByUser.setIdUser(userSrv.getId());
+		List<File> files = SharixWS.getInstanceOf().getFilesByUser(user.getId());
 		
-		FileSrv []filesSrv = serviceStub.getFilesByUser(getFilesByUser).get_return();
-		
-		Assert.assertTrue(filesSrv.length == 3);
-		Assert.assertTrue(filesSrv[0].getName().equals("file1"));
+		Assert.assertTrue(files.size() == 3);
+		Assert.assertTrue(files.get(0).getName().equals("file1"));
 	}
 	
 	public static void testUnRegisterUser() throws Exception {
-		UnRegisterUser unRegisterUser = new UnRegisterUser();
-		unRegisterUser.setId(userSrv.getId());
-		
-		boolean result = serviceStub.unRegisterUser(unRegisterUser).get_return();
+		boolean result = SharixWS.getInstanceOf().unRegisterUser(user.getId());
 		
 		Assert.assertTrue(result == true);
 	}

@@ -3,9 +3,9 @@ package model;
 public class File {
 	String name;
 	Integer ID;
-	User owner;
+	int owner;
 	
-	public File(String name, Integer ID, User owner) {
+	public File(String name, Integer ID, int owner) {
 		this.name = name;
 		this.ID = -1;
 		this.owner = owner;
@@ -27,11 +27,11 @@ public class File {
 		this.ID = newID;
 	}
 	
-	public User getOwner() {
+	public int getOwner() {
 		return this.owner;
 	}
 	
-	public void setOwner(User newOwner) {
+	public void setOwner(int newOwner) {
 		this.owner = newOwner;
 	}
 	
