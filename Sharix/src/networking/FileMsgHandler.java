@@ -13,18 +13,21 @@ public class FileMsgHandler extends MsgHandler{
 	private FileChannel channel;
 	private MappedByteBuffer memBuff;
 	private ByteBuffer buf;
-	private long remaining;
+	long remaining;
+	long size;
 
 	
 	public FileMsgHandler(int type, String ops, String relativePath, int size) throws IOException {	
 		super(type, ops);
-		
+		System.out.println("Path " + relativePath);
 		File tmpFile = new File(relativePath);
 		this.remaining = tmpFile.length();
+		this.size = this.remaining;
 		
-		if (this.getOp().equals("w")  && !tmpFile.exists()) {
+		if (this.getOp().equals("rw")  && !tmpFile.exists()) {
 			tmpFile.createNewFile();
 			this.remaining = size;
+			this.size = size;
 		}
 		
 		try {
@@ -35,9 +38,15 @@ public class FileMsgHandler extends MsgHandler{
 		}
 
 	    this.channel = this.aFile.getChannel();
-	    this.memBuff = this.channel.map(FileChannel.MapMode.READ_WRITE, 0, this.remaining);
+	    if (this.getOp().equals("rw"))
+	    	this.memBuff = this.channel.map(FileChannel.MapMode.READ_WRITE, 0, this.remaining);
+	    else
+	    	this.memBuff = this.channel.map(FileChannel.MapMode.READ_ONLY, 0, this.remaining);
+	    
 
-	    this.buf = ByteBuffer.allocate(48);
+	    this.buf = ByteBuffer.allocate(55);
+	    
+	    System.out.println("New file with size " + this.size + " " + this.remaining);
 	}
 
 	@Override
@@ -47,11 +56,11 @@ public class FileMsgHandler extends MsgHandler{
 	    
 		into.clear();
 		int bytesRead = 0;		
-		if (into.remaining() < this.memBuff.remaining()) {
+		if (into.remaining() > this.memBuff.remaining()) {
 			bytesRead = this.memBuff.remaining();
 			
 			while (into.hasRemaining() && this.memBuff.hasRemaining())
-				into.put(memBuff.get());
+				into.put(this.memBuff.get());
 			
 		} else {
 			bytesRead = into.remaining();
@@ -59,28 +68,42 @@ public class FileMsgHandler extends MsgHandler{
 			into.put(this.memBuff);
 		}
 	
-		into.flip();	
+		into.flip();
+		this.remaining -= bytesRead;
+		//System.out.println("Read remaining " + this.remaining);
 		return bytesRead;
 	}
 
 	@Override
-	public void write(ByteBuffer from) {
-		if (!this.op.equals("w"))
-			return;
+	public int write(ByteBuffer from) {
+		if (!this.op.equals("rw"))
+			return 0;
 		
-		if (from.remaining() > this.memBuff.remaining()) {
+		int bytesWritten = from.remaining();
+		System.out.println("Remaining " + bytesWritten);
+		
+		if (from.remaining() < this.memBuff.remaining()) {
 			this.memBuff.put(from);
 		
 		} else {
 			while (this.memBuff.hasRemaining() && from.hasRemaining())
 				this.memBuff.put(from.get());
 		}
+		
+		this.remaining -= bytesWritten;
+		
+		System.out.println("Write remaining " + this.remaining);
+		
+		if (this.size != 0)
+			return bytesWritten * 100 / (int)this.size ;
+		
+		return 0;
 	}
 
 	@Override
 	public void setOp(String ops) {
-		if (ops.equals("w")) {
-			this.op = "w";
+		if (ops.equals("rw")) {
+			this.op = "rw";
 			
 		
 		} else if (ops.equals("r")) {

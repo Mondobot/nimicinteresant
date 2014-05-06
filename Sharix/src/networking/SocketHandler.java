@@ -8,9 +8,12 @@ import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 import model.Transfer;
+import model.User;
 
 public class SocketHandler extends Thread{
 	int ID;
@@ -18,10 +21,13 @@ public class SocketHandler extends Thread{
 	SocketChannel socket = null;
 	Selector selector = null;
 	ByteBuffer sockBuf, msgBuf;
-	PriorityQueue<Transfer> sendQ, recvQ;
+	Queue<Transfer> sendQ, recvQ, cmdQ;
+	User remote, self;
 	boolean active;
 	
-	public SocketHandler() throws IOException {
+
+	
+	public SocketHandler(User self) throws IOException {
 		this.active = false;
 		this.ID = (int)(Math.random() * 100);
 	/*	
@@ -32,14 +38,17 @@ public class SocketHandler extends Thread{
 	//	this.sockBuf = new CharBuffer() ;//= StringBuffer.allocateDirect(BUF_SIZE);
 		//this.msgBuf = new StringBuffer();//= StringBuffer.allocateDirect(BUF_SIZE - 5);
 				
+		this.self = self;
+		
 		this.sockBuf = ByteBuffer.allocate(BUF_SIZE);
-		this.msgBuf = ByteBuffer.allocate(BUF_SIZE - 5);
+		this.msgBuf = ByteBuffer.allocate(BUF_SIZE);
 		this.selector = Selector.open();
 		
-		this.sendQ = new PriorityQueue<Transfer>();
-		this.recvQ = new PriorityQueue<Transfer>();
+		this.sendQ = new LinkedList<Transfer>();
+		this.recvQ = new LinkedList<Transfer>();
+		this.cmdQ = new LinkedList<Transfer>();
 		
-		}
+	}
 	
 	public void setSocket(SocketChannel newSocket) throws ClosedChannelException {
 		this.socket = newSocket;
@@ -50,36 +59,156 @@ public class SocketHandler extends Thread{
 		
 		if (!this.active)
 			this.active = true;
-		
-
 	}
 	
+	void makeCmd(int type, String cmd) {
+		System.out.println("Sending message type " + type + " and cmd " + "\"" + cmd + "\"");
+		CommandMsgHandler cmdMH = new CommandMsgHandler(type, "r", cmd);
+		Transfer tr = new Transfer(0, null, null, cmdMH, 0, Transfer.UPLD);
+		this.cmdQ.add(tr);
+	}	
+	
+	void makeRequest(String relativePath) {
+		makeCmd(MsgHandler.GETFILE, relativePath);
+	}
+	
+	@SuppressWarnings("deprecation")
 	private void parseMessage(){
-		System.out.println(this.sockBuf.position());
-		
-	/*	this.sockBuf.clear();
-		this.sockBuf.putChar('\0');
-		this.sockBuf.putChar('N');
-		this.sockBuf.putChar('\0');
-		this.sockBuf.putChar('N');
-	*/
-	//	this.sockBuf.putChar('N');
-	//	this.sockBuf.putChar('N');
-
-		//this.sockBuf.flip();
 		int size = this.sockBuf.getInt();
+		int type = this.sockBuf.getInt();
+		int id;
+		String name = "";
+		Transfer tr;
 		
-		System.out.println("Message size: " + size);
-		System.out.println("Message type: " + this.sockBuf.getInt());
+		//System.out.println("Message size: " + size);
+		//System.out.println("Message type: " + type);
 		
-		String x = "";
-		for (int i = 0; i < size; ++i)
-			x += this.sockBuf.getChar();
+		System.out.println("Sockbuf pos " + this.sockBuf.position());
+		System.out.println("Sockbuf limit " + this.sockBuf.limit());
 		
-		System.out.println(x);
-		System.out.println(this.sockBuf.position());
+		this.msgBuf.clear();
+		this.msgBuf.put(this.sockBuf);
+		this.msgBuf.flip();
 		
-		System.out.println("Actual size: " + this.sockBuf.limit() + "\n");
+		System.out.println("Msgbuf pos " + this.msgBuf.position());
+		System.out.println("Msgbuf limit " + this.msgBuf.limit());
+		
+		
+		switch (type) {
+		case MsgHandler.GETNAME:
+			System.out.println("Getname");
+			
+			name = "";
+			while (this.msgBuf.position() < this.msgBuf.limit()) {
+				System.out.println("Read one char");
+				System.out.println(this.msgBuf.getChar());
+			}
+			
+			System.out.println("Found name " + name);
+			
+			this.remote = new User(0, name);
+			makeCmd(MsgHandler.RESNAME, this.self.getName());
+			break;
+		
+		case MsgHandler.RESNAME:
+			System.out.println("Resname");
+			
+			name = "";
+			while (this.msgBuf.position() < this.msgBuf.limit())
+				name += this.msgBuf.getChar();
+			
+			this.remote = new User(0, name);
+			break;
+
+		case MsgHandler.GETFILE:
+			System.out.println("GETFILE");
+			System.out.println(System.getProperty("user.dir"));
+			name = "";
+			//print
+			while (this.msgBuf.position() < this.msgBuf.limit())
+				name += this.msgBuf.getChar();
+			
+			System.out.println("On " + name);
+			// check to see if we have the file?
+			
+			if (name.equals(""))
+				return;
+			
+			FileMsgHandler upld = null;
+			try {
+				upld = new FileMsgHandler(MsgHandler.DATAPACK, "r", name, 0);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			tr = new Transfer(0, this.self, this.remote, upld, 0, Transfer.UPLD);
+			this.sendQ.add(tr);
+			
+			int ansType = MsgHandler.ACKFILE;
+			if (!true) // If we don't have the file
+				ansType = MsgHandler.NACKFILE;
+			
+			makeCmd(ansType, name + "_" + upld.remaining);
+			break;
+
+		case MsgHandler.ACKFILE:
+			System.out.println("ACK");
+			name = "";
+			while (this.msgBuf.position() < this.msgBuf.limit())
+				name += this.msgBuf.getChar();
+			int sz = 0;
+			String[] parts = name.split("_");
+			name = parts[0];
+			sz = Integer.parseInt(parts[1]);
+			System.out.println("On " + name);
+			
+			FileMsgHandler dwnld = null;
+			try {
+				dwnld = new FileMsgHandler(MsgHandler.DATAPACK, "rw", name + "_1", sz);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			tr = new Transfer(0, this.self, this.remote, dwnld, 0, Transfer.DWNLD);
+			this.recvQ.add(tr);
+			break;
+
+		case MsgHandler.NACKFILE:
+			name = "";
+			while (this.msgBuf.position() < this.msgBuf.limit())
+				name += this.msgBuf.getChar();
+			System.out.println("Can't download " + name);
+			break;
+
+		case MsgHandler.DATAPACK:
+			tr = this.recvQ.peek();
+			
+			if (tr == null) {
+				System.out.println("No active download");
+				break;
+			}
+			
+			FileMsgHandler msg = (FileMsgHandler) tr.getCargo();
+			int percent = msg.write(this.msgBuf);
+			System.out.println("Writing " + percent);
+			tr.setProgress(tr.getProgress() + percent);
+			break;
+			
+		case MsgHandler.ENDFILE:
+			System.out.println("ENDFILE");
+			tr = this.recvQ.peek();
+			
+			if (tr == null) {
+				System.out.println("No active download ENDFILE");
+			}
+			
+			((FileMsgHandler)tr.getCargo()).close();
+			tr.setProgress(100);
+			tr.setStatus(Transfer.CMPLT);
+			this.recvQ.remove();
+			System.out.println("Finished sending file!");
+			this.stop();
+		}
 	}
 	
 	public void recv() throws IOException {
@@ -87,6 +216,7 @@ public class SocketHandler extends Thread{
 		//WritableByteChannel outChannel = Channels.newChannel(System.out);
 		
 		this.sockBuf.clear();
+		this.msgBuf.clear();
 		
 		// TODO 2.8: read from socket into buffer, use a loop
 		while ((bytes = this.socket.read(this.sockBuf)) > 0){
@@ -97,14 +227,19 @@ public class SocketHandler extends Thread{
 			}
 			System.out.println(buf);
 			*/
-			System.out.println("We read " + bytes + " from  the socket!");
+			//System.out.println("We read " + bytes + " from  the socket!");
 			this.sockBuf.flip();
 			parseMessage();
 		}
 	}
 	
 	public void send() throws Exception {
-		Transfer current = this.sendQ.peek();
+		Transfer current = this.cmdQ.peek();
+		Queue<Transfer> inUse = this.cmdQ;
+		if (current == null) {
+			current = this.sendQ.peek();
+			inUse = this.sendQ;
+		}
 		
 		//System.out.println(this.ID);
 		if (current == null) {
@@ -115,20 +250,31 @@ public class SocketHandler extends Thread{
 		MsgHandler currentHandler = current.getCargo();
 		
 		int bytes = currentHandler.read(this.msgBuf);
+		
+		//System.out.println("Type " + currentHandler.getType());
 		System.out.println("Sending " + bytes);
 		
 		if (bytes == 0) {
-			System.out.println("Cleaning");
+			//System.out.println("Cleaning");
 			current.setProgress(100);
 			current.setStatus(Transfer.CMPLT);
-			this.sendQ.remove();
+			inUse.remove();
+			
+			if (currentHandler.getType() == MsgHandler.DATAPACK) {
+				makeCmd(MsgHandler.ENDFILE, "");
+				return;
+			} else if (currentHandler.getType() != MsgHandler.ENDFILE) {
+				return;
+			}
 		}
 		
 		this.sockBuf.clear();
 		this.sockBuf.putInt(bytes);
 		this.sockBuf.putInt(currentHandler.getType());
 		this.sockBuf.put(this.msgBuf);
+		
 		this.sockBuf.flip();
+		//System.out.println("Limit sockbuff " + this.sockBuf.limit());
 		
 		this.socket.write(this.sockBuf);
 	}

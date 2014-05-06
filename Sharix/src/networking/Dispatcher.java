@@ -14,7 +14,7 @@ public class Dispatcher extends Thread{
 	
 	public static final int BUF_SIZE	= 4;			// buffer size
 	public static final String IP		= "127.0.0.1";	// server IP
-	public static final int PORT		= 30009;		// server port
+	public static final int PORT		= 30008;		// server port
 	
 	private Selector selector;
 	private ServerSocketChannel serverSocketChannel;
@@ -30,15 +30,17 @@ public class Dispatcher extends Thread{
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); 
 		
 		System.out.println("Cevaa");
-		SocketHandler socketHandler = new SocketHandler();
+		User x = new User(0, "ieu");
+		SocketHandler socketHandler = new SocketHandler(x);
 		SocketChannel newSocket = serverSocketChannel.accept();
 		newSocket.configureBlocking(false);
 		socketHandler.setSocket(newSocket);
 		
 		
 		System.out.println("Altceva");
-		socketHandler.start();
 		socketHandlers.add(socketHandler);
+		socketHandler.start();
+		
 		
 	}
 	
@@ -46,11 +48,13 @@ public class Dispatcher extends Thread{
 		SocketChannel socket = (SocketChannel) key.channel();
 		
 		if (socket.finishConnect()) {
-			SocketHandler socketHandler = new SocketHandler();
+			User x = new User(0, "ieu");
+			SocketHandler socketHandler = new SocketHandler(x);
 			
 			socketHandler.setSocket(socket);
 			socketHandlers.add(socketHandler);
 			socketHandler.start();
+			socketHandler.makeCmd(MsgHandler.GETNAME, x.getName());
 			
 		} else {
 			System.out.println("Filed to connect");
@@ -114,7 +118,7 @@ public class Dispatcher extends Thread{
 		}
 	}
 	
-	public static void main(String args[]) throws InterruptedException {
+	public static void main(String args[]) throws InterruptedException, IOException {
 		System.out.println("Hehe");
 		Dispatcher x = new Dispatcher();
 		x.start();
@@ -123,18 +127,33 @@ public class Dispatcher extends Thread{
 		try {
 			sleep(1000);
 			System.out.println("Outer");
-			x.connectTo("127.0.0.1", 30009);
+			x.connectTo("127.0.0.1", 30008);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			System.out.println("Bag pla!");
 			e.printStackTrace();
 		}
-		
-		CommandMsgHandler cmd = new CommandMsgHandler(1, "r", "gigi");
-		User ieu = new User(2, "Matei");
-		Transfer tr = new Transfer(1, ieu, ieu, cmd, 0, Transfer.UPLD);
 		sleep(4000);
-		x.socketHandlers.get(1).sendQ.add(tr);
+		//x.socketHandlers.get(0).makeCmd(MsgHandler.GETFILE, "edi.txt");
+		FileMsgHandler rd = new FileMsgHandler(1, "r", "edi.txt", 0);
+		FileMsgHandler  wrt= new FileMsgHandler(1, "rw", "edi.txt_2", 24);
+		ByteBuffer y = ByteBuffer.allocate(50);
+		
+		rd.read(y);
+		wrt.write(y);
+		wrt.close();
+		
+		
+		//System.out.println(y.position() + " " + y.remaining());
+		//System.out.println(y.getChar() + "_" + y.getChar());
+		
+		//System.out.println(y.array().toString());
+		
+		//User ieu = new User(2, "Matei");
+		//Transfer tr = new Transfer(MsgHandler.GETNAME, ieu, ieu, cmd, 0, Transfer.UPLD);
+		//sleep(4000);
+		//x.socketHandlers.get(1).sendQ.add(tr);
+		//x.socketHandlers.get(1).makeCmd(MsgHandler.GETNAME, )
+		
 		/*try {
 			x.socketHandlers.get(0).send();
 		} catch (IOException e) {
