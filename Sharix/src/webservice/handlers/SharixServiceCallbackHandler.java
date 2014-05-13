@@ -65,7 +65,7 @@
             * override this method for handling normal response from getConnectedUsers operation
             */
            public void receiveResultgetConnectedUsers(
-        		   webservice.handlers.SharixServiceStub.GetConnectedUsersResponse result
+                    webservice.handlers.SharixServiceStub.GetConnectedUsersResponse result
                         ) {
            }
 
@@ -81,7 +81,7 @@
             * override this method for handling normal response from getFilesByUser operation
             */
            public void receiveResultgetFilesByUser(
-        		   webservice.handlers.SharixServiceStub.GetFilesByUserResponse result
+                    webservice.handlers.SharixServiceStub.GetFilesByUserResponse result
                         ) {
            }
 
@@ -97,7 +97,7 @@
             * override this method for handling normal response from registerFilesByUser operation
             */
            public void receiveResultregisterFilesByUser(
-        		   webservice.handlers.SharixServiceStub.RegisterFilesByUserResponse result
+                    webservice.handlers.SharixServiceStub.RegisterFilesByUserResponse result
                         ) {
            }
 
@@ -113,7 +113,7 @@
             * override this method for handling normal response from registerNewUser operation
             */
            public void receiveResultregisterNewUser(
-        		   webservice.handlers.SharixServiceStub.RegisterNewUserResponse result
+                    webservice.handlers.SharixServiceStub.RegisterNewUserResponse result
                         ) {
            }
 

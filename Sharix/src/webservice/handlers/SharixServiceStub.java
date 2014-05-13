@@ -177,7 +177,7 @@
                     /**
                      * Auto generated method signature
                      * 
-                     * @see webservice.ops.SharixService#unRegisterUser
+                     * @see ops.SharixService#unRegisterUser
                      * @param unRegisterUser0
                     
                      */
@@ -186,7 +186,7 @@
 
                             public  webservice.handlers.SharixServiceStub.UnRegisterUserResponse unRegisterUser(
 
-                            		webservice.handlers.SharixServiceStub.UnRegisterUser unRegisterUser0)
+                            webservice.handlers.SharixServiceStub.UnRegisterUser unRegisterUser0)
                         
 
                     throws java.rmi.RemoteException
@@ -299,13 +299,13 @@
                 /**
                 * Auto generated method signature for Asynchronous Invocations
                 * 
-                * @see webservice.ops.SharixService#startunRegisterUser
+                * @see ops.SharixService#startunRegisterUser
                     * @param unRegisterUser0
                 
                 */
                 public  void startunRegisterUser(
 
-                		webservice.handlers.SharixServiceStub.UnRegisterUser unRegisterUser0,
+                 webservice.handlers.SharixServiceStub.UnRegisterUser unRegisterUser0,
 
                   final webservice.handlers.SharixServiceCallbackHandler callback)
 
@@ -351,7 +351,7 @@
                                 org.apache.axiom.soap.SOAPEnvelope resultEnv = resultContext.getEnvelope();
                                 
                                         java.lang.Object object = fromOM(resultEnv.getBody().getFirstElement(),
-                                        		webservice.handlers.SharixServiceStub.UnRegisterUserResponse.class,
+                                                                         webservice.handlers.SharixServiceStub.UnRegisterUserResponse.class,
                                                                          getEnvelopeNamespaces(resultEnv));
                                         callback.receiveResultunRegisterUser(
                                         (webservice.handlers.SharixServiceStub.UnRegisterUserResponse)object);
@@ -446,7 +446,7 @@
                     /**
                      * Auto generated method signature
                      * 
-                     * @see webservice.ops.SharixService#getConnectedUsers
+                     * @see ops.SharixService#getConnectedUsers
                      * @param getConnectedUsers2
                     
                      */
@@ -568,7 +568,7 @@
                 /**
                 * Auto generated method signature for Asynchronous Invocations
                 * 
-                * @see webservice.ops.SharixService#startgetConnectedUsers
+                * @see ops.SharixService#startgetConnectedUsers
                     * @param getConnectedUsers2
                 
                 */
@@ -715,7 +715,7 @@
                     /**
                      * Auto generated method signature
                      * 
-                     * @see webservice.ops.SharixService#getFilesByUser
+                     * @see ops.SharixService#getFilesByUser
                      * @param getFilesByUser4
                     
                      */
@@ -837,7 +837,7 @@
                 /**
                 * Auto generated method signature for Asynchronous Invocations
                 * 
-                * @see webservice.ops.SharixService#startgetFilesByUser
+                * @see ops.SharixService#startgetFilesByUser
                     * @param getFilesByUser4
                 
                 */
@@ -984,7 +984,7 @@
                     /**
                      * Auto generated method signature
                      * 
-                     * @see webservice.ops.SharixService#registerFilesByUser
+                     * @see ops.SharixService#registerFilesByUser
                      * @param registerFilesByUser6
                     
                      */
@@ -1106,7 +1106,7 @@
                 /**
                 * Auto generated method signature for Asynchronous Invocations
                 * 
-                * @see webservice.ops.SharixService#startregisterFilesByUser
+                * @see ops.SharixService#startregisterFilesByUser
                     * @param registerFilesByUser6
                 
                 */
@@ -1253,7 +1253,7 @@
                     /**
                      * Auto generated method signature
                      * 
-                     * @see webservice.ops.SharixService#registerNewUser
+                     * @see ops.SharixService#registerNewUser
                      * @param registerNewUser8
                     
                      */
@@ -1375,7 +1375,7 @@
                 /**
                 * Auto generated method signature for Asynchronous Invocations
                 * 
-                * @see webservice.ops.SharixService#startregisterNewUser
+                * @see ops.SharixService#startregisterNewUser
                     * @param registerNewUser8
                 
                 */
@@ -2235,6 +2235,48 @@
                             
 
                         /**
+                        * field for Ip
+                        */
+
+                        
+                                    protected java.lang.String localIp ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localIpTracker = false ;
+
+                           public boolean isIpSpecified(){
+                               return localIpTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getIp(){
+                               return localIp;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Ip
+                               */
+                               public void setIp(java.lang.String param){
+                            localIpTracker = true;
+                                   
+                                            this.localIp=param;
+                                    
+
+                               }
+                            
+
+                        /**
                         * field for Name
                         */
 
@@ -2271,6 +2313,48 @@
                             localNameTracker = true;
                                    
                                             this.localName=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Port
+                        */
+
+                        
+                                    protected java.lang.String localPort ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPortTracker = false ;
+
+                           public boolean isPortSpecified(){
+                               return localPortTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getPort(){
+                               return localPort;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Port
+                               */
+                               public void setPort(java.lang.String param){
+                            localPortTracker = true;
+                                   
+                                            this.localPort=param;
                                     
 
                                }
@@ -2347,6 +2431,24 @@
                                                }
                                     
                                    xmlWriter.writeEndElement();
+                             } if (localIpTracker){
+                                    namespace = "http://model/xsd";
+                                    writeStartElement(null, namespace, "ip", xmlWriter);
+                             
+
+                                          if (localIp==null){
+                                              // write the nil attribute
+                                              
+                                                     writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localIp);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
                              } if (localNameTracker){
                                     namespace = "http://model/xsd";
                                     writeStartElement(null, namespace, "name", xmlWriter);
@@ -2361,6 +2463,24 @@
 
                                         
                                                    xmlWriter.writeCharacters(localName);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localPortTracker){
+                                    namespace = "http://model/xsd";
+                                    writeStartElement(null, namespace, "port", xmlWriter);
+                             
+
+                                          if (localPort==null){
+                                              // write the nil attribute
+                                              
+                                                     writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localPort);
                                             
                                           }
                                     
@@ -2556,12 +2676,24 @@
                                  
                                 elementList.add(
                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localId));
-                            } if (localNameTracker){
+                            } if (localIpTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://model/xsd",
+                                                                      "ip"));
+                                 
+                                         elementList.add(localIp==null?null:
+                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIp));
+                                    } if (localNameTracker){
                                       elementList.add(new javax.xml.namespace.QName("http://model/xsd",
                                                                       "name"));
                                  
                                          elementList.add(localName==null?null:
                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localName));
+                                    } if (localPortTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://model/xsd",
+                                                                      "port"));
+                                 
+                                         elementList.add(localPort==null?null:
+                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPort));
                                     }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -2667,6 +2799,34 @@
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://model/xsd","ip").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIp(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://model/xsd","name").equals(reader.getName())){
                                 
                                        nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
@@ -2676,6 +2836,34 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://model/xsd","port").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPort(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                             
                                        } else {
@@ -3750,6 +3938,90 @@
                                }
                             
 
+                        /**
+                        * field for Ip
+                        */
+
+                        
+                                    protected java.lang.String localIp ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localIpTracker = false ;
+
+                           public boolean isIpSpecified(){
+                               return localIpTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getIp(){
+                               return localIp;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Ip
+                               */
+                               public void setIp(java.lang.String param){
+                            localIpTracker = true;
+                                   
+                                            this.localIp=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for Port
+                        */
+
+                        
+                                    protected java.lang.String localPort ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localPortTracker = false ;
+
+                           public boolean isPortSpecified(){
+                               return localPortTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getPort(){
+                               return localPort;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param Port
+                               */
+                               public void setPort(java.lang.String param){
+                            localPortTracker = true;
+                                   
+                                            this.localPort=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -3822,6 +4094,42 @@
 
                                         
                                                    xmlWriter.writeCharacters(localName);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localIpTracker){
+                                    namespace = "http://ops";
+                                    writeStartElement(null, namespace, "ip", xmlWriter);
+                             
+
+                                          if (localIp==null){
+                                              // write the nil attribute
+                                              
+                                                     writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localIp);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             } if (localPortTracker){
+                                    namespace = "http://ops";
+                                    writeStartElement(null, namespace, "port", xmlWriter);
+                             
+
+                                          if (localPort==null){
+                                              // write the nil attribute
+                                              
+                                                     writeAttribute("xsi","http://www.w3.org/2001/XMLSchema-instance","nil","1",xmlWriter);
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localPort);
                                             
                                           }
                                     
@@ -4017,6 +4325,18 @@
                                  
                                          elementList.add(localName==null?null:
                                          org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localName));
+                                    } if (localIpTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://ops",
+                                                                      "ip"));
+                                 
+                                         elementList.add(localIp==null?null:
+                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localIp));
+                                    } if (localPortTracker){
+                                      elementList.add(new javax.xml.namespace.QName("http://ops",
+                                                                      "port"));
+                                 
+                                         elementList.add(localPort==null?null:
+                                         org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localPort));
                                     }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
@@ -4105,6 +4425,62 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setName(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://ops","ip").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setIp(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                            
+                                       } else {
+                                           
+                                           
+                                           reader.getElementText(); // throw away text nodes if any.
+                                       }
+                                      
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://ops","port").equals(reader.getName())){
+                                
+                                       nillableValue = reader.getAttributeValue("http://www.w3.org/2001/XMLSchema-instance","nil");
+                                       if (!"true".equals(nillableValue) && !"1".equals(nillableValue)){
+                                    
+
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setPort(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                             
                                        } else {

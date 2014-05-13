@@ -27,13 +27,13 @@ public class WebServiceTest {
 	}
 	
 	public static void testRegisterUser() throws Exception {
-		user = SharixWS.getInstanceOf().registerUser("user_proba");
+		user = SharixWS.getInstanceOf().registerUser("user_proba", "192.168.1.1", "1020");
 		
 		Assert.assertTrue(user.getName().equals("user_proba"));
 	}
 	
 	public static void testRegisterSameUser() throws Exception {
-		User sameUser = SharixWS.getInstanceOf().registerUser("user_proba");
+		User sameUser = SharixWS.getInstanceOf().registerUser("user_proba", "192.168.1.1", "1020");
 		
 		Assert.assertTrue(sameUser == null);
 	}

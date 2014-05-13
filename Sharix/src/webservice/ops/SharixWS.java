@@ -37,9 +37,11 @@ public class SharixWS {
 		return instance;
 	}
 	
-	public User registerUser(String username) {
+	public User registerUser(String username, String ip, String port) {
 		RegisterNewUser registerUser = new RegisterNewUser();
 		registerUser.setName(username);
+		registerUser.setIp(ip);
+		registerUser.setPort(port);
 		
 		try {
 			UserSrv userSrv = serviceStub.registerNewUser(registerUser).get_return();
