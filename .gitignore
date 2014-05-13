@@ -1,5 +1,7 @@
+.gitignore
 bin/src/*
 .arch.swp
 src/model/*
 bin/model/*
 bin
+Sharix/build/classes/gui
