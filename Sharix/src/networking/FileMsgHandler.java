@@ -12,12 +12,11 @@ public class FileMsgHandler extends MsgHandler{
 	private RandomAccessFile aFile;
 	private FileChannel channel;
 	private MappedByteBuffer memBuff;
-	private ByteBuffer buf;
 	long remaining;
 	long size;
 
 	
-	public FileMsgHandler(int type, String ops, String relativePath, int size) throws IOException {	
+	public FileMsgHandler(int type, String ops, String relativePath, long size) throws IOException {	
 		super(type, ops);
 		System.out.println("Path " + relativePath);
 		File tmpFile = new File(relativePath);
@@ -38,15 +37,11 @@ public class FileMsgHandler extends MsgHandler{
 		}
 
 	    this.channel = this.aFile.getChannel();
-	    if (this.getOp().equals("rw"))
+	    if (this.getOp().equals("rw")) {
 	    	this.memBuff = this.channel.map(FileChannel.MapMode.READ_WRITE, 0, this.remaining);
-	    else
+	    } else {
 	    	this.memBuff = this.channel.map(FileChannel.MapMode.READ_ONLY, 0, this.remaining);
-	    
-
-	    this.buf = ByteBuffer.allocate(55);
-	    
-	    System.out.println("New file with size " + this.size + " " + this.remaining);
+	    }
 	}
 
 	@Override
@@ -56,21 +51,13 @@ public class FileMsgHandler extends MsgHandler{
 	    
 		into.clear();
 		int bytesRead = 0;		
-		if (into.remaining() > this.memBuff.remaining()) {
-			bytesRead = this.memBuff.remaining();
+		while (this.memBuff.hasRemaining() && into.hasRemaining())
+			into.put(this.memBuff.get());
 			
-			while (into.hasRemaining() && this.memBuff.hasRemaining())
-				into.put(this.memBuff.get());
-			
-		} else {
-			bytesRead = into.remaining();
-			
-			into.put(this.memBuff);
-		}
+		bytesRead = into.position();
 	
 		into.flip();
 		this.remaining -= bytesRead;
-		//System.out.println("Read remaining " + this.remaining);
 		return bytesRead;
 	}
 
@@ -80,24 +67,17 @@ public class FileMsgHandler extends MsgHandler{
 			return 0;
 		
 		int bytesWritten = from.remaining();
-		System.out.println("Remaining " + bytesWritten);
 		
-		if (from.remaining() < this.memBuff.remaining()) {
+		if (from.remaining() <= this.memBuff.remaining()) {
 			this.memBuff.put(from);
 		
 		} else {
-			while (this.memBuff.hasRemaining() && from.hasRemaining())
+			while (from.hasRemaining() && this.memBuff.hasRemaining())
 				this.memBuff.put(from.get());
 		}
 		
-		this.remaining -= bytesWritten;
-		
-		System.out.println("Write remaining " + this.remaining);
-		
-		if (this.size != 0)
-			return bytesWritten * 100 / (int)this.size ;
-		
-		return 0;
+		this.remaining -= bytesWritten;		
+		return bytesWritten;
 	}
 
 	@Override
@@ -117,6 +97,7 @@ public class FileMsgHandler extends MsgHandler{
 	}
 	
 	public void close() {
+		System.out.println("CLOSING");
 		 try {
 			this.aFile.close();
 		} catch (IOException e) {

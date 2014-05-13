@@ -46,4 +46,7 @@ public class CommandMsgHandler extends MsgHandler {
 		into.flip();	
 		return bytesRead;
 	}
+	
+	public void close() {
+	}
 }

@@ -1,7 +1,5 @@
 package mediator;
 
-import java.util.ArrayList;
-
 import controller.Controller;
 
 import model.*;
@@ -19,23 +17,33 @@ public class Mediator implements IMediator{
 	}
 
 	//todo implement for the version 2.0
-	public void getUsers() {
+	public void getUsersFromServer() {
 		
 	}
 	
 	//todo implement for the version 2.0
-	public void getFiles(Integer userID) {
+	public void getFilesFromServer(Integer userID) {
 		
 	}
 	
 	//todo implement for the version 2.0
-	public void getTransfers(Integer userID) {
+	public void getTransfersFromServer(Integer userID) {
 		
 	}
 	
-	public void updateTransfer(Transfer newTransfer) {
+	public void newTransfer(Transfer newTr) {
 		
 	}
-	
-	
+
+	public User getUser(int id) {
+		return Model.getInstance().getUser(id);
+	}
+
+	public User getOwnUser() {
+		return Model.getInstance().getMyUser();
+	}
+
+	public boolean hasFile(String name) {
+		return Model.getInstance().hasFile(name);
+	}
 }

@@ -6,8 +6,8 @@ public class MsgHandler {
 	int type;
 	String op;
 
-	public final static int GETNAME = 0;
-	public final static int RESNAME = 1;
+	public final static int GETID = 0;
+	public final static int RESID = 1;
 	public final static int GETFILE = 2;
 	public final static int ENDFILE = 3;
 	public final static int ACKFILE = 4;
@@ -43,5 +43,8 @@ public class MsgHandler {
 
 	public String getOp() {
 		return this.op;
+	}
+	
+	public void close() {
 	}
 }

@@ -110,5 +110,23 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 		return -1;
 	}
 
+	public boolean hasFile(String name) {
+		for (File i:files) {
+			if (i.getName().equals(name))
+				return true;
+		}
+			
+		return false;	
+	}
+
+	public User getUser(int id) {
+		for (User i:users) {
+			if (i.getId() == id)
+				return i;
+		}
+
+		return null;
+	}
+	
 	
 }

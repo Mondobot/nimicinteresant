@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import mediator.Mediator;
 import model.Transfer;
 import model.User;
 
@@ -16,12 +17,15 @@ public class Dispatcher extends Thread{
 	public static final String IP		= "127.0.0.1";	// server IP
 	public static final int PORT		= 30008;		// server port
 	
+	private Mediator mediator;
 	private Selector selector;
-	private ServerSocketChannel serverSocketChannel;
-	
+	private ServerSocketChannel serverSocketChannel;	
 	private ArrayList<SocketHandler> socketHandlers = new ArrayList<SocketHandler>();
 	
 	
+	public Dispatcher (Mediator mediator) {
+		this.mediator = mediator;
+	}
 	
 	public static ExecutorService pool = Executors.newFixedThreadPool(5);	// thread pool - 5 threads
 	
@@ -29,15 +33,10 @@ public class Dispatcher extends Thread{
 		System.out.print("ACCEPT: ");
 		ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel(); 
 		
-		System.out.println("Cevaa");
-		User x = new User(0, "ieu");
-		SocketHandler socketHandler = new SocketHandler(x);
+		SocketHandler socketHandler = new SocketHandler(this.mediator);
 		SocketChannel newSocket = serverSocketChannel.accept();
 		newSocket.configureBlocking(false);
 		socketHandler.setSocket(newSocket);
-		
-		
-		System.out.println("Altceva");
 		socketHandlers.add(socketHandler);
 		socketHandler.start();
 		
@@ -48,13 +47,14 @@ public class Dispatcher extends Thread{
 		SocketChannel socket = (SocketChannel) key.channel();
 		
 		if (socket.finishConnect()) {
-			User x = new User(0, "ieu");
-			SocketHandler socketHandler = new SocketHandler(x);
+			SocketHandler socketHandler = new SocketHandler(this.mediator);
 			
 			socketHandler.setSocket(socket);
 			socketHandlers.add(socketHandler);
+			
+			socketHandler.makeCmd(MsgHandler.GETID, Integer.toString(this.mediator.getOwnUser().getId()));
 			socketHandler.start();
-			socketHandler.makeCmd(MsgHandler.GETNAME, x.getName());
+			
 			
 		} else {
 			System.out.println("Filed to connect");
@@ -118,9 +118,9 @@ public class Dispatcher extends Thread{
 		}
 	}
 	
-	public static void main(String args[]) throws InterruptedException, IOException {
+	public void maine(String args[]) {
 		System.out.println("Hehe");
-		Dispatcher x = new Dispatcher();
+		Dispatcher x = new Dispatcher(this.mediator);
 		x.start();
 		
 		System.out.println("mamaliga");
@@ -132,15 +132,40 @@ public class Dispatcher extends Thread{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		sleep(4000);
-		//x.socketHandlers.get(0).makeCmd(MsgHandler.GETFILE, "edi.txt");
-		FileMsgHandler rd = new FileMsgHandler(1, "r", "edi.txt", 0);
-		FileMsgHandler  wrt= new FileMsgHandler(1, "rw", "edi.txt_2", 24);
-		ByteBuffer y = ByteBuffer.allocate(50);
 		
-		rd.read(y);
-		wrt.write(y);
-		wrt.close();
+		
+		try {
+			sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("dim: " + x.socketHandlers.size());
+		x.socketHandlers.get(1).makeCmd(MsgHandler.GETFILE, "test");
+		x.socketHandlers.get(0).makeCmd(MsgHandler.GETFILE, "enya");
+		//x.socketHandlers.get(0).makeCmd(MsgHandler.GETFILE, "test");
+		
+		try {
+			sleep(12000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if (x.socketHandlers.get(1).recvQ.peek() != null)
+			System.out.println("Not quitting :(");
+		
+		else
+			System.out.println("works!");
+		//x.socketHandlers.get(0).makeCmd(MsgHandler.GETFILE, "test");
+		//FileMsgHandler rd = new FileMsgHandler(1, "r", "edi.txt", 0);
+		//FileMsgHandler  wrt= new FileMsgHandler(1, "rw", "edi.txt_2", 24);
+		//ByteBuffer y = ByteBuffer.allocate(50);
+		
+		//rd.read(y);
+		//wrt.write(y);
+		//wrt.close();
 		
 		
 		//System.out.println(y.position() + " " + y.remaining());

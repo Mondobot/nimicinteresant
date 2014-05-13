@@ -30,6 +30,7 @@ import observer.IFileListener;
 import observer.ITransferListener;
 import observer.IUserListener;
 import mediator.IMediator;
+import mediator.Mediator;
 import mediator.MediatorMock;
 import model.File;
 import model.Model;
@@ -84,9 +85,9 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void getListsFromServer() {
-    	mediator.getUsers();
-    	mediator.getFiles(((User)usersModel.get(0)).getId());
-    	mediator.getTransfers(-1);
+    	mediator.getUsersFromServer();
+    	mediator.getFilesFromServer(((User)usersModel.get(0)).getId());
+    	mediator.getTransfersFromServer(-1);
     }
     
     private void designView(){
@@ -112,7 +113,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void registerController(){
-    	mediator = new MediatorMock(new Controller());
+    	//this.mediator = new MediatorMock(new Controller());
+    	this.mediator = new Mediator(new Controller());
     	String title;
         if (myUser != null) {
         	mediator.registerUser(myUser);
@@ -157,7 +159,7 @@ public class MainFrame extends javax.swing.JFrame {
         	public void mouseClicked(MouseEvent evt) {
         		if (evt.getClickCount() == 2) {
         			JList x = (JList)evt.getSource();
-        			mediator.getFiles(((User)usersModel.get(x.locationToIndex(evt.getPoint()))).getId());
+        			mediator.getFilesFromServer(((User)usersModel.get(x.locationToIndex(evt.getPoint()))).getId());
         		}
         	}
 		});

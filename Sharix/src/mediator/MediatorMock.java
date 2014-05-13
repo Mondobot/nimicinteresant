@@ -48,12 +48,12 @@ public class MediatorMock implements IMediator {
 	}
 	
 	@Override
-	public void getUsers() {
+	public void getUsersFromServer() {
 		controller.updateUsers(this.users);		
 	}
 
 	@Override
-	public void getFiles(Integer userID) {
+	public void getFilesFromServer(Integer userID) {
 		if (userID == 0)
 			controller.updateFiles(this.u1);
 		
@@ -65,7 +65,7 @@ public class MediatorMock implements IMediator {
 	}
 
 	@Override
-	public void getTransfers(Integer userID) {
+	public void getTransfersFromServer(Integer userID) {
 		for (Transfer transfer : tr){
 			TransferTask transferTask = new TransferTask(this, transfer);
 			transferTask.execute();
@@ -74,7 +74,7 @@ public class MediatorMock implements IMediator {
 	}
 	
 	@Override
-	public void updateTransfer(Transfer newTransfer){
+	public void newTransfer(Transfer newTransfer){
 		controller.updateTransfer(newTransfer);
 	}
 }

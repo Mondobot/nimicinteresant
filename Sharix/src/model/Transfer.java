@@ -7,7 +7,7 @@ public class Transfer {
 	MsgHandler cargo;
 	User source;
 	User dest;
-	int progress;
+	double progress;
 	String status;
 	
 	public static String DWNLD = "Downloading";
@@ -61,12 +61,12 @@ public class Transfer {
 		this.dest = dest;
 	}
 
-	public int getProgress() {
+	public double getProgress() {
 		return progress;
 	}
 
-	public void setProgress(int progress) {
-		this.progress = progress;
+	public void setProgress(double d) {
+		this.progress = d;
 	}
 	
 	public String getStatus() {
