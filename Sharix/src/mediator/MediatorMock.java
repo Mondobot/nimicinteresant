@@ -10,7 +10,6 @@ import worker.TransferTask;
 import controller.Controller;
 
 import model.File;
-import model.Model;
 import model.Transfer;
 import model.User;
 
@@ -70,11 +69,18 @@ public class MediatorMock implements IMediator {
 			TransferTask transferTask = new TransferTask(this, transfer);
 			transferTask.execute();
 		}
-		controller.updateTransfers(tr);
+		this.controller.updateTransfers(tr);
 	}
 	
+	
+	
 	@Override
-	public void newTransfer(Transfer newTransfer){
-		controller.updateTransfer(newTransfer);
+	public void addTransfer(Transfer newTransfer){
+		this.controller.addTransfer(newTransfer);
+	}
+
+	@Override
+	public void updateTransfer(Transfer tr) {
+		this.controller.updateTransfer(tr);
 	}
 }

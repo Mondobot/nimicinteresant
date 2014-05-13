@@ -60,12 +60,17 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 		return transfers;
 	}
 	
-	public void updateTransfer(Transfer newTransfer) {
+	public void updateTransfer(Transfer tr) {
 		for (Transfer transfer: transfers)
-			if (transfer.getID() == newTransfer.getID()) {
-				transfer = newTransfer;
+			if (transfer.getID() == tr.getID()) {
+				transfer = tr;
 				notifyListenersTransfersUpdated();
 			}
+	}
+	
+	public void addTransfer(Transfer newTransfer) {
+		this.transfers.add(newTransfer);
+		notifyListenersTransfersUpdated();
 	}
 
 	@Override
@@ -127,6 +132,4 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 
 		return null;
 	}
-	
-	
 }

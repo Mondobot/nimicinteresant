@@ -52,7 +52,7 @@ public class Dispatcher extends Thread{
 			socketHandler.setSocket(socket);
 			socketHandlers.add(socketHandler);
 			
-			socketHandler.makeCmd(MsgHandler.GETID, Integer.toString(this.mediator.getOwnUser().getId()));
+			socketHandler.makeCmd(MsgHandler.GETID, Integer.toString(this.mediator.getMyUser().getId()));
 			socketHandler.start();
 			
 			

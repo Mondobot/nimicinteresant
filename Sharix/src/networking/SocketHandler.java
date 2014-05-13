@@ -6,11 +6,9 @@ import java.nio.*;
 import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
-import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 import mediator.Mediator;
@@ -36,7 +34,7 @@ public class SocketHandler extends Thread{
 		
 		this.remote = null;
 		this.mediator = mediator;
-		this.self = mediator.getOwnUser();
+		this.self = mediator.getMyUser();
 		
 		this.sockBuf = ByteBuffer.allocate(BUF_SIZE);
 		this.msgBuf = ByteBuffer.allocate(BUF_SIZE - 8);
@@ -143,7 +141,7 @@ public class SocketHandler extends Thread{
 						e1.printStackTrace();
 				}
 				tr = new Transfer(0, this.self, this.remote, upld, 0, Transfer.UPLD);
-				this.mediator.newTransfer(tr);
+				this.mediator.addTransfer(tr);
 				this.sendQ.add(tr);
 				
 			} else {
@@ -191,7 +189,6 @@ public class SocketHandler extends Thread{
 			}
 			
 			long sz = 0;
-			String vec;
 			System.out.println("NAME= " + "\"" + name + "\"ahah");
 			String[] parts = name.split("_");
 			name = parts[0];
@@ -214,7 +211,7 @@ public class SocketHandler extends Thread{
 				e.printStackTrace();
 			}
 			tr = new Transfer(0, this.self, this.remote, dwnld, 0, Transfer.DWNLD);
-			this.mediator.newTransfer(tr);
+			this.mediator.addTransfer(tr);
 			this.recvQ.add(tr);
 			break;
 
@@ -238,6 +235,7 @@ public class SocketHandler extends Thread{
 			int bytes = msg.write(this.msgBuf);
 			//System.out.println("Writing " + percent);
 			tr.setProgress(tr.getProgress() + (double)bytes * 100 / msg.size);
+			this.mediator.updateTransfer(tr);
 			//msg.close();
 			this.counter += 1;
 			if (this.counter == 40) {
@@ -258,6 +256,7 @@ public class SocketHandler extends Thread{
 			((FileMsgHandler)tr.getCargo()).close();
 			tr.setProgress(100);
 			tr.setStatus(Transfer.CMPLT);
+			this.mediator.updateTransfer(tr);
 			this.recvQ.remove();
 			System.out.println("Finished sending file!");
 			try {
@@ -276,14 +275,11 @@ public class SocketHandler extends Thread{
 	}
 	
 	public void recv() throws IOException {
-		int bytes = 0;
-		//WritableByteChannel outChannel = Channels.newChannel(System.out);
-		
 		this.sockBuf.clear();
 		this.msgBuf.clear();
 		
 		// TODO 2.8: read from socket into buffer, use a loop
-		while ((bytes = this.socket.read(this.sockBuf)) > 0){
+		while ((this.socket.read(this.sockBuf)) > 0){
 			/*if (!buf.hasRemaining()) {
 				buf.flip();
 				outChannel.write(buf);

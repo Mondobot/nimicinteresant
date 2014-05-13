@@ -1,11 +1,6 @@
 package controller;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import worker.TransferTask;
-
-import mediator.IMediator;
 import model.*;
 
 public class Controller {
@@ -29,7 +24,23 @@ public class Controller {
 		Model.getInstance().setTransfers(newTransfers);
 	}
 	
-	public void updateTransfer(Transfer newTransfer) {
+	public void updateTransfer(Transfer tr) {
+		Model.getInstance().updateTransfer(tr);
+	}
+	
+	public void addTransfer(Transfer newTransfer) {
 		Model.getInstance().updateTransfer(newTransfer);
+	}
+
+	public boolean hasFile(String name) {
+		return Model.getInstance().hasFile(name);
+	}
+
+	public User getMyUser() {
+		return Model.getInstance().getMyUser();
+	}
+
+	public User getUser(int id) {
+		return Model.getInstance().getUser(id);
 	}
 }
