@@ -61,6 +61,9 @@ public class MediatorMock implements IMediator {
 		
 		if (userID == 2)
 			controller.updateFiles(this.u3);
+		
+		if (userID < 0 || userID > 2)
+			System.out.println("whaaat?");
 	}
 
 	@Override

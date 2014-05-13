@@ -113,8 +113,8 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void registerController(){
-    	//this.mediator = new MediatorMock(new Controller());
-    	this.mediator = new Mediator(new Controller());
+    	this.mediator = new MediatorMock(new Controller());
+    	//this.mediator = new Mediator(new Controller());
     	String title;
         if (myUser != null) {
         	mediator.registerUser(myUser);
@@ -159,7 +159,18 @@ public class MainFrame extends javax.swing.JFrame {
         	public void mouseClicked(MouseEvent evt) {
         		if (evt.getClickCount() == 2) {
         			JList x = (JList)evt.getSource();
+        			
         			mediator.getFilesFromServer(((User)usersModel.get(x.locationToIndex(evt.getPoint()))).getId());
+        		}
+        	}
+		});
+        
+        jList1.addMouseListener(new MouseAdapter() {
+        	public void mouseClicked(MouseEvent evt) {
+        		if (evt.getClickCount() == 2) {
+        			JList x = (JList)evt.getSource();
+        			
+        			System.out.println(((File)filesModel.get((x.locationToIndex(evt.getPoint())))).getName());
         		}
         	}
 		});
