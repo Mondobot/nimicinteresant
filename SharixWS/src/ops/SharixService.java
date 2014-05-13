@@ -16,12 +16,12 @@ public class SharixService {
 	Map<Integer, List<FileSrv>> filesByUser = new HashMap<>();
 
 	//return userSrv if username is unique, null otherwise
-	public synchronized UserSrv registerNewUser(String name) {
+	public synchronized UserSrv registerNewUser(String name, String ip, String port) {
 		for (UserSrv u : users)
 			if (u.getName().equalsIgnoreCase(name))
 				return null;
 		
-		UserSrv userSrv = new UserSrv(SharixServiceHelper.generateUserId(), name);
+		UserSrv userSrv = new UserSrv(SharixServiceHelper.generateUserId(), name, ip, port);
 		users.add(userSrv);
 		
 		return userSrv;

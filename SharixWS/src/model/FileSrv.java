@@ -3,7 +3,7 @@ package model;
 import java.io.Serializable;
 
 public class FileSrv implements Serializable {
-	private static final long serialVersionUID = 1000000001L;
+	private static final long serialVersionUID = 1000000002L;
 	
 	int id;
 	String name;
