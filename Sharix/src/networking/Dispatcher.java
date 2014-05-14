@@ -1,6 +1,5 @@
 package networking;
 import java.io.*;
-import java.nio.*;
 import java.nio.channels.*;
 import java.net.*;
 import java.util.*;
@@ -8,14 +7,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import mediator.Mediator;
-import model.Transfer;
 import model.User;
 
 public class Dispatcher extends Thread{
 	
-	public static final int BUF_SIZE	= 4;			// buffer size
-	public static final String IP		= "127.0.0.1";	// server IP
-	public static final int PORT		= 30008;		// server port
+	//public static final int BUF_SIZE	= 4;			// buffer size
+	public String IP;// = "127.0.0.1";	// server IP
+	public int PORT	= 30008;		// server port
 	
 	private Mediator mediator;
 	private Selector selector;
@@ -25,6 +23,9 @@ public class Dispatcher extends Thread{
 	
 	public Dispatcher (Mediator mediator) {
 		this.mediator = mediator;
+		this.IP = mediator.getMyUser().getIP();
+		//this.PORT = mediator.getMyUser().getPORT();
+		//this.PORT = 30008;
 	}
 	
 	public static ExecutorService pool = Executors.newFixedThreadPool(5);	// thread pool - 5 threads
@@ -35,12 +36,16 @@ public class Dispatcher extends Thread{
 		
 		SocketHandler socketHandler = new SocketHandler(this.mediator);
 		SocketChannel newSocket = serverSocketChannel.accept();
+		
+		String remAddr = ((InetSocketAddress)newSocket.getRemoteAddress()).getAddress().getHostAddress();
+		int remPort = ((InetSocketAddress)newSocket.getRemoteAddress()).getPort();
+		
+		if (!this.mediator.hasUser(remAddr, remPort))
+			return;
 		newSocket.configureBlocking(false);
 		socketHandler.setSocket(newSocket);
 		socketHandlers.add(socketHandler);
 		socketHandler.start();
-		
-		
 	}
 	
 	private void connect(SelectionKey key) throws Exception {
@@ -57,12 +62,16 @@ public class Dispatcher extends Thread{
 			
 			
 		} else {
-			System.out.println("Filed to connect");
+			System.out.println("Failed to connect");
 		}
 	}
 	
 	public void connectTo(final String IP, final int PORT) throws Exception {
-
+		for (SocketHandler i:this.socketHandlers) {
+			if (((InetSocketAddress)i.socket.getRemoteAddress()).getAddress().getHostAddress().equals(IP) &&
+				((InetSocketAddress)i.socket.getRemoteAddress()).getPort() == PORT)
+				return;
+		}
 		SocketChannel socket = SocketChannel.open();
 		socket.configureBlocking(false);
 		socket.connect(new InetSocketAddress(IP, PORT));	
@@ -189,5 +198,19 @@ public class Dispatcher extends Thread{
 		
 		//System.out.println("Connected to: " + x.socketHandlers.get(0).socket.socket().getRemoteSocketAddress());
 		//System.out.println("Connected to: " + x.socketHandlers.get(1).socket.socket().getRemoteSocketAddress());
+	}
+
+	public void downloadFile(String name) {
+		User sel = this.mediator.getSelectedUser();
+		for (SocketHandler i:this.socketHandlers)
+			try {
+				if (((InetSocketAddress)i.socket.getRemoteAddress()).getAddress().getHostAddress().equals(sel.getIP()) &&
+						((InetSocketAddress)i.socket.getRemoteAddress()).getPort() == sel.getPORT()) {
+					i.makeRequest(name);
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 	}
 }

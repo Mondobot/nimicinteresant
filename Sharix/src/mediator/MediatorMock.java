@@ -3,6 +3,8 @@ package mediator;
 import java.util.ArrayList;
 import java.util.List;
 
+import networking.Dispatcher;
+
 import staticlists.ReadLists;
 
 import worker.TransferTask;
@@ -41,7 +43,7 @@ public class MediatorMock implements IMediator {
 	
 	@Override
 	public void registerUser(String username) {
-		User myUser = new User(-1, username);
+		User myUser = new User(-1, username, "", 0);
 		
 		controller.registerMyUser(myUser);
 	}
@@ -85,5 +87,35 @@ public class MediatorMock implements IMediator {
 	@Override
 	public void updateTransfer(Transfer tr) {
 		this.controller.updateTransfer(tr);
+	}
+
+	@Override
+	public void selectUser(User user) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public User getSelectedUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void connectTo(String ip, int port) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void downloadFile(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setDispatcher(Dispatcher dispatcher) {
+		// TODO Auto-generated method stub
+		
 	}
 }

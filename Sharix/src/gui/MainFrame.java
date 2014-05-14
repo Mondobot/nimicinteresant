@@ -24,6 +24,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import networking.Dispatcher;
+
 import controller.Controller;
 
 import observer.IFileListener;
@@ -73,6 +75,8 @@ public class MainFrame extends javax.swing.JFrame {
     		return false;
     	};
     };
+
+	private Dispatcher dispatcher;
     
     static String myUser;
     
@@ -113,8 +117,10 @@ public class MainFrame extends javax.swing.JFrame {
     }
     
     private void registerController(){
-    	this.mediator = new MediatorMock(new Controller());
-    	//this.mediator = new Mediator(new Controller());
+    	//this.mediator = new MediatorMock(new Controller(), null);
+    	this.mediator = new Mediator(new Controller(), null);
+    	this.dispatcher = new Dispatcher((Mediator) this.mediator);
+    	this.mediator.setDispatcher(this.dispatcher);
     	String title;
         if (myUser != null) {
         	mediator.registerUser(myUser);
@@ -161,6 +167,7 @@ public class MainFrame extends javax.swing.JFrame {
         			JList x = (JList)evt.getSource();
         			
         			mediator.getFilesFromServer(((User)usersModel.get(x.locationToIndex(evt.getPoint()))).getId());
+        			mediator.selectUser(((User)usersModel.get(x.locationToIndex(evt.getPoint()))));
         		}
         	}
 		});
@@ -169,8 +176,8 @@ public class MainFrame extends javax.swing.JFrame {
         	public void mouseClicked(MouseEvent evt) {
         		if (evt.getClickCount() == 2) {
         			JList x = (JList)evt.getSource();
-        			
-        			System.out.println(((File)filesModel.get((x.locationToIndex(evt.getPoint())))).getName());
+        			mediator.connectTo(mediator.getSelectedUser().getIP(), mediator.getSelectedUser().getPORT());
+        			mediator.downloadFile(((File)filesModel.get((x.locationToIndex(evt.getPoint())))).getName());
         		}
         	}
 		});

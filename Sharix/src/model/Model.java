@@ -8,6 +8,7 @@ import observer.*;
 public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 	private static Model model;
 	private User myUser;
+	private User selected;
 	private List<User> users;
 	private List<File> files;
 	private List<Transfer> transfers;
@@ -131,5 +132,27 @@ public class Model implements IUserSubject, IFileSubject, ITransferSubject {
 		}
 
 		return null;
+	}
+	
+	public User getSelected() {
+		return this.selected;
+	}
+
+	public void selectUser(User user) {
+		this.selected = user;
+		
+	}
+
+	public User getSelectedUser() {
+		return this.selected;
+	}
+
+	public boolean hasUser(String remAddr, int remPort) {
+		for (User i:users) {
+			if (i.getIP().equals(remAddr) && i.getPORT() == remPort)
+				return true;
+		}
+		
+		return false;
 	}
 }

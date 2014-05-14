@@ -43,4 +43,16 @@ public class Controller {
 	public User getUser(int id) {
 		return Model.getInstance().getUser(id);
 	}
+
+	public void selectUser(User user) {
+		Model.getInstance().selectUser(user);
+	}
+
+	public User getSelectedUser() {
+		return Model.getInstance().getSelectedUser();
+	}
+
+	public boolean hasUser(String remAddr, int remPort) {
+		return Model.getInstance().hasUser(remAddr, remPort);
+	}
 }
